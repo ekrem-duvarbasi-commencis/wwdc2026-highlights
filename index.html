@@ -1525,14 +1525,64 @@ AsyncImage(url: thumbnailURL)
         </article>
 
         <article class="card">
+          <img class="card-image" src="images/app-sotre-analytics.png" alt="App Store Connect Analytics dashboard showing acquisition metrics including first-time downloads, re-downloads, conversion rate, impressions, product page views, and App Store Features breakdown" loading="lazy" decoding="async" />
           <h3>Commerce and analytics give teams more levers</h3>
-          <p>In-App Purchase updates, Analytics improvements, custom product pages, and offer-code expansion create more ways to test acquisition and monetization.</p>
+          <p>A new 12-month commitment billing plan for yearly subscriptions, enhanced analytics with cohort and benchmark data, and a unified IAP submission flow give teams more ways to grow and measure their business.</p>
           <ul class="details-list">
-            <li>The updated Analytics experience adds monetization and subscription data, cohort capabilities, peer benchmarks, and more filters.</li>
-            <li>Custom product pages and product page optimization can work with the new creative assets.</li>
-            <li>The enhanced submission experience groups In-App Purchases and related App Store items into a more centralized review flow.</li>
+            <li>Monthly subscriptions with a 12-month commitment bill at a monthly rate but lock in a yearly commitment — configured on an existing yearly product in App Store Connect, no new product ID needed. Available worldwide except the US and Singapore (iOS 26.4+).</li>
+            <li>The StoreKit <code>pricingTerms</code> API exposes both billing plan types on a single product; apps must display the monthly price <em>and</em> the total commitment amount before the purchase.</li>
+            <li>The updated Analytics experience adds monetization and subscription data, cohort capabilities, peer benchmarks, and more granular filters.</li>
+            <li>The enhanced submission experience groups In-App Purchases, In-App Events, custom product pages, and product page optimization into a single, centralized review submission.</li>
           </ul>
-          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/210/" target="_blank" rel="noopener">Apple In-App Purchase</a><a href="https://developer.apple.com/app-store-connect/analytics/" target="_blank" rel="noopener">App Store analytics</a><a href="https://developer.apple.com/app-store/custom-product-pages/" target="_blank" rel="noopener">Custom product pages</a></div>
+
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
+            </summary>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">1 · Merchandise the 12-month commitment plan</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Filter <code>pricingTerms</code> to find the monthly billing plan. You are required to display both the per-month price and the total commitment price before the customer initiates a purchase.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">if let commitmentTerms = product.subscription?.pricingTerms
+        .first(where: { $0.billingPlanType == .monthly }) {
+
+    let monthlyPrice = commitmentTerms.billingDisplayPrice
+    let totalPrice   = commitmentTerms.commitmentInfo.price
+
+    // Required: show both values to the customer before purchase.
+    print("\(monthlyPrice)/mo × 12 — total \(totalPrice)")
+}</code></pre>
+              </div>
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">2 · Initiate the purchase</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Pass <code>.billingPlanType(.monthly)</code> as a purchase option to select the commitment plan. Entitlement checking works the same as for a standard monthly subscription — use <code>Transaction.currentEntitlements</code>.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">let result = try await product.purchase(options: [.billingPlanType(.monthly)])
+
+switch result {
+case .success(let verificationResult):
+    // Verify and grant access for the current billing period.
+    let transaction = try verificationResult.payloadValue
+    await transaction.finish()
+case .pending:
+    // Awaiting customer or parental approval.
+case .userCancelled:
+    break
+@unknown default:
+    break
+}</code></pre>
+              </div>
+
+            </div>
+          </details>
+          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
+
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/210/" target="_blank" rel="noopener">Apple In-App Purchase</a><a href="https://developer.apple.com/documentation/StoreKit/supporting-monthly-subscriptions-with-a-12-month-commitment" target="_blank" rel="noopener">StoreKit docs</a><a href="https://developer.apple.com/app-store-connect/analytics/" target="_blank" rel="noopener">App Store analytics</a><a href="https://developer.apple.com/app-store/custom-product-pages/" target="_blank" rel="noopener">Custom product pages</a></div>
         </article>
       </div>
     </section>
