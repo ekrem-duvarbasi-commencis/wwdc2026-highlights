@@ -825,11 +825,11 @@ struct PlantPhotoQuery: IndexedEntityQuery {
               <td><a href="https://developer.apple.com/wwdc26/guides/ios/" target="_blank" rel="noopener">iOS guide</a></td>
             </tr>
             <tr>
-              <td>Early 2027</td>
-              <td>Regulated medical device app status becomes required for affected existing apps in EEA, UK, and US.</td>
-              <td>Health & Fitness or Medical apps, and apps with frequent medical or treatment information.</td>
-              <td>Declare regulated medical device status and collect required safety or regulatory information.</td>
-              <td><a href="https://developer.apple.com/help/app-store-connect/manage-app-information/declare-regulated-medical-device-status" target="_blank" rel="noopener">Medical device status</a></td>
+              <td>iOS 27 SDK</td>
+              <td><code>UIScreen.main</code> is flagged as a legacy API — using it for layout breaks apps running in iPhone Mirroring and Stage Manager.</td>
+              <td>UIKit apps that check screen size using <code>UIScreen.main.bounds</code>.</td>
+              <td>Audit any screen size checks and migrate to window- or view-based sizing.</td>
+              <td><a href="https://developer.apple.com/videos/play/wwdc2026/278/" target="_blank" rel="noopener">Modernize UIKit</a></td>
             </tr>
           </tbody>
         </table>
