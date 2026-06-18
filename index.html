@@ -1020,6 +1020,19 @@ for try await sample in seedDataset.makeSamples(
           </ul>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/258/" target="_blank" rel="noopener">What's new in Xcode 27</a><a href="https://developer.apple.com/documentation/Xcode/analyzing-the-performance-of-your-shipping-app" target="_blank" rel="noopener">Analyzing performance</a></div>
         </article>
+
+        <article class="card">
+          <h3>Instruments gets Top Functions, run comparisons, and an AI profiling instrument</h3>
+          <img class="card-image" src="images/xcode-instruments.png" alt="Instruments showing Top Functions view and run comparison" loading="lazy" decoding="async" />
+          <p>Instruments 27 makes the profiling workflow faster at every step — from spotting the most expensive code immediately, to confirming a fix actually worked, to debugging AI features without manual trace reading.</p>
+          <ul class="details-list">
+            <li><strong>Top Functions:</strong> the Time Profiler now surfaces the top CPU-consuming functions at a glance, so you don't need to hunt through the call tree to find where time is going. Each entry links directly to the source location.</li>
+            <li><strong>Run comparisons:</strong> record a trace before and after your fix, then compare the two side-by-side. The diff view highlights which functions improved, regressed, or stayed the same — giving you objective before/after evidence instead of guessing from numbers.</li>
+            <li><strong>Swift Concurrency instrument updates:</strong> new views for execution contention (tasks competing for the same thread) and system blocking (tasks stalled waiting on OS resources) make it easier to pinpoint why your async work isn't running when you expect it to.</li>
+            <li><strong>FoundationModels instrument:</strong> an enhanced instrument dedicated to AI apps. Record a trace of any Foundation Models session and inspect individual prompts, their latency, and the control flow across multiple <code>LanguageModelSession</code>s and dynamic profiles — all in the standard Instruments timeline.</li>
+          </ul>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/268/" target="_blank" rel="noopener">Profile, fix, and verify: Improve app responsiveness</a><a href="https://developer.apple.com/videos/play/wwdc2026/243/" target="_blank" rel="noopener">Debug and profile agentic apps with Instruments</a><a href="https://developer.apple.com/videos/play/wwdc2026/258/" target="_blank" rel="noopener">What's new in Xcode 27</a></div>
+        </article>
       </div>
     </section>
 
