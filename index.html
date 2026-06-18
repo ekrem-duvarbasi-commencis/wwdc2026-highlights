@@ -137,6 +137,7 @@
       border-bottom: 2px solid transparent;
     }
     .toc a:hover { color: var(--ink); border-color: var(--border); text-decoration: none; }
+    .toc a.active { color: var(--accent); border-color: var(--accent); }
 
     .page { width: min(1100px, 100%); margin: 0 auto; padding: 44px 20px 76px; }
     .section { margin-bottom: 64px; scroll-margin-top: 78px; }
@@ -1269,5 +1270,34 @@ for try await sample in seedDataset.makeSamples(
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
   <script>hljs.highlightAll();</script>
+  <script>
+    (function () {
+      const tocLinks = Array.from(document.querySelectorAll('.toc a[href^="#"]'));
+      const sectionIds = tocLinks.map(a => a.getAttribute('href').slice(1));
+      const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+      let activeId = null;
+
+      function setActive(id) {
+        if (id === activeId) return;
+        activeId = id;
+        tocLinks.forEach(a => {
+          const matches = a.getAttribute('href') === '#' + id;
+          a.classList.toggle('active', matches);
+        });
+        // Scroll active link into view within the nav bar
+        const activeLink = document.querySelector('.toc a.active');
+        if (activeLink) activeLink.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      }, { rootMargin: '-10% 0px -80% 0px', threshold: 0 });
+
+      sections.forEach(s => observer.observe(s));
+    })();
+  </script>
 </body>
 </html>
