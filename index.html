@@ -728,12 +728,89 @@ let response = try await session.respond(
         </article>
 
         <article class="card">
-          <h3>Core AI runs custom models on Apple Silicon</h3>
-          <p>Core AI is a new OS-level framework for bringing your own models on-device with a memory-safe Swift API built for Apple Silicon.</p>
+          <h3>Bring your own AI model, run it entirely on device</h3>
+          <p>Core AI is a new framework that lets you ship any custom AI model inside your app — no server, no API key, no usage costs. The model runs locally on the device's CPU, GPU, and Neural Engine, with a straightforward Swift API to load it and run it.</p>
           <ul class="details-list">
-            <li>Apple calls out zero server dependencies, zero token costs, automatic hardware specialization, and ahead-of-time compilation for quick load times.</li>
-            <li>Fine-grained memory control, zero-copy data paths, and stateful execution make it relevant for both compact models and larger generative workloads.</li>
+            <li>You convert your model (e.g. from PyTorch) into an <code>.aimodel</code> file using Apple's Python tools, add it to your Xcode project, and load it in a few lines of Swift. Xcode shows you the model's inputs, outputs, and size directly in the editor.</li>
+            <li>The first time the model loads, the device compiles it for its own hardware — this is automatic but can be slow for large models. You can move most of that work to build time using the <code>coreai-build</code> command-line tool, so users don't wait on first launch.</li>
+            <li>The system caches the compiled model after the first run, so subsequent loads are instant. You can also pre-specialize the model (e.g. right after download) so the delay never happens in the middle of a user flow.</li>
           </ul>
+
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code examples
+            </summary>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">1 · Load and run a model</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Load an <code>.aimodel</code> file and get a reference to its inference function. Core AI automatically specializes the model for the current device's hardware.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">import CoreAI
+
+// Specialize the model for this device and load it.
+let model = try await AIModel(contentsOf: urlOfModel)
+
+// Load the inference function by name (check the Xcode model viewer for names).
+guard let function = try model.loadFunction(named: "main") else {
+    // Handle case where expected function is not found.
+}
+
+// Create an NDArray matching the model's expected input shape and type.
+var input = NDArray(shape: [3, 4], scalarType: .float32)
+
+// Write your data into the array.
+var mutableView = input.mutableView(as: Float.self)
+if let elements = mutableView.contiguousElements {
+    writeInputData(into: elements)
+}
+
+// Run inference.
+var outputs = try await function.run(inputs: ["input": input])
+
+// Read the output.
+if let predictionValue = outputs.remove("prediction"),
+   let prediction = predictionValue.ndArray {
+    processOutput(prediction.view())
+}</code></pre>
+              </div>
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">2 · Pre-specialize to avoid first-launch delays</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Call <code>specialize</code> right after downloading a model so it's ready before the user needs it. On subsequent launches, <code>AIModelCache.default</code> returns the cached version instantly.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">func loadModel(from modelURL: URL) async throws -> AIModel {
+    let cache = AIModelCache.default
+
+    // Return immediately if the model is already specialized and cached.
+    if let model = try cache.model(for: modelURL, options: .default) {
+        return model
+    }
+
+    // No cache yet — inform the user and specialize now.
+    await MainActor.run { informUser("Preparing AI features. This may take a while…") }
+
+    return try await AIModel(contentsOf: modelURL, options: .default)
+}</code></pre>
+              </div>
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">3 · Ahead-of-time compilation (build time)</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Run <code>coreai-build</code> at build time to do most of the heavy lifting on your Mac instead of on the user's device. At runtime, pick the right compiled asset for the current device architecture.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-bash"># Compile the model for iOS at build time (requires Metal Toolchain).
+xcrun coreai-build compile MyModel.aimodel \
+    --platform iOS \
+    --min-deployment-version 27.0 \
+    --output compiled/</code></pre>
+              </div>
+
+            </div>
+          </details>
+
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/324/" target="_blank" rel="noopener">Meet Core AI</a><a href="https://developer.apple.com/videos/play/wwdc2026/326/" target="_blank" rel="noopener">On-device AI models</a><a href="https://developer.apple.com/videos/play/wwdc2026/325/" target="_blank" rel="noopener">Model optimization</a></div>
         </article>
 
