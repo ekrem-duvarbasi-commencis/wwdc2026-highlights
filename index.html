@@ -241,22 +241,80 @@
       font-size: 0.9em;
     }
 
-    .dates-table-wrap { overflow-x: auto; }
-    table {
-      width: 100%;
-      min-width: 840px;
-      border-collapse: collapse;
-      overflow: hidden;
+    /* ── Timeline ── */
+    .timeline {
+      position: relative;
+      padding-left: 36px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: var(--border);
+    }
+    .tl-item {
+      position: relative;
+      margin-bottom: 32px;
+    }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot {
+      position: absolute;
+      left: -36px;
+      top: 20px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 2.5px solid var(--accent);
+      z-index: 1;
+    }
+    .tl-dot--sdk { border-color: var(--purple); }
+    .tl-date {
+      display: block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--accent-dark);
+      margin-bottom: 6px;
+    }
+    .tl-date--sdk { color: var(--purple); }
+    .tl-card {
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      background: var(--surface);
       box-shadow: var(--shadow);
-      font-size: 14px;
+      padding: 18px 22px;
     }
-    th, td { padding: 13px 15px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
-    th { background: #ececf1; color: var(--muted); font-size: 12px; letter-spacing: 0.07em; text-transform: uppercase; }
-    tr:last-child td { border-bottom: none; }
-    td:first-child { white-space: nowrap; font-weight: 800; }
+    .date-change { font-size: 15px; color: var(--ink); font-weight: 700; margin-bottom: 4px; }
+    .date-desc { font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+    .date-who {
+      font-size: 12px;
+      color: var(--muted);
+      background: #f5f5f7;
+      border-radius: 6px;
+      padding: 7px 10px;
+      margin-bottom: 6px;
+    }
+    .date-who::before { content: 'Affects · '; font-weight: 700; color: #555; }
+    .date-next {
+      font-size: 12px;
+      color: var(--accent-dark);
+      background: #eef3ff;
+      border-radius: 6px;
+      padding: 7px 10px;
+      margin-bottom: 12px;
+    }
+    .date-next::before { content: '→ '; font-weight: 800; }
+    .sdk-item + .sdk-item { border-top: 1px solid var(--border); margin-top: 16px; padding-top: 16px; }
+    @media (max-width: 600px) {
+      .timeline { padding-left: 24px; }
+      .tl-dot { left: -24px; }
+      .tl-card::before { width: 18px; left: -18px; }
+    }
 
     .footer {
       padding: 32px 20px 40px;
@@ -311,7 +369,7 @@
       <a href="#appstore">App Store</a>
       <a href="#spatial">Spatial & Web</a>
       <a href="#safety">Safety</a>
-      <a href="#dates">Dates</a>
+      <a href="#dates" style="color:#ff453a">Important Dates</a>
     </div>
   </nav>
 
@@ -745,94 +803,56 @@ struct PlantPhotoQuery: IndexedEntityQuery {
     <section class="section" id="dates">
       <div class="section-header">
         <div class="label">Timeline</div>
-        <h2>Important Apple platform dates and action items.</h2>
+        <h2>Important Dates</h2>
         <p>A quick view of the dates and platform changes teams may want to keep on their radar.</p>
       </div>
 
-      <div class="dates-table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>When</th>
-              <th>Change</th>
-              <th>Who should care</th>
-              <th>Action</th>
-              <th>Source</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Now</td>
-              <td>Monthly subscriptions with a 12-month commitment are configurable in App Store Connect.</td>
-              <td>Subscription apps outside the US and Singapore.</td>
-              <td>Model pricing, support copy, renewal messaging, and cancellation expectations.</td>
-              <td><a href="https://developer.apple.com/app-store/subscriptions/" target="_blank" rel="noopener">Subscriptions</a></td>
-            </tr>
-            <tr>
-              <td>June 18, 2026</td>
-              <td>Age ratings update in Australia and Vietnam.</td>
-              <td>Apps distributed in Australia or Vietnam, especially apps with web access, medical content, loot boxes, or region-specific content rules.</td>
-              <td>Review age rating questionnaire answers and storefront readiness.</td>
-              <td><a href="https://developer.apple.com/help/app-store-connect/reference/app-information/age-ratings-values-and-definitions" target="_blank" rel="noopener">Age ratings</a></td>
-            </tr>
-            <tr>
-              <td>Summer 2026</td>
-              <td>Sign in with Apple and Hide My Email move toward the shared private.icloud.com domain.</td>
-              <td>Apps and services that filter, display, or document private relay addresses.</td>
-              <td>Update allowlists, support docs, analytics grouping, and customer-service scripts.</td>
-              <td><a href="https://developer.apple.com/news/" target="_blank" rel="noopener">Apple Developer News</a></td>
-            </tr>
-            <tr>
-              <td>July 2026</td>
-              <td>Social media capability questions are expected in the age rating workflow.</td>
-              <td>Apps with social feeds, user-generated content, redistribution, or anonymous chat.</td>
-              <td>Audit features and prepare accurate App Store Connect answers.</td>
-              <td><a href="https://developer.apple.com/wwdc26/guides/app-store/" target="_blank" rel="noopener">App Store guide</a></td>
-            </tr>
-            <tr>
-              <td>September 2026</td>
-              <td>Social media capability declaration becomes mandatory for submissions.</td>
-              <td>All teams submitting App Store updates, especially social and community products.</td>
-              <td>Keep the declaration in mind before uploading builds.</td>
-              <td><a href="https://developer.apple.com/wwdc26/guides/app-store/" target="_blank" rel="noopener">App Store guide</a></td>
-            </tr>
-            <tr>
-              <td>Fall 2026</td>
-              <td>Richer App Store assets, Retention Messaging, and related product-page updates roll out.</td>
-              <td>Marketing, growth, and subscription teams.</td>
-              <td>Prepare header images, short videos, cancellation messaging, and test plans.</td>
-              <td><a href="https://developer.apple.com/videos/play/wwdc2026/205/" target="_blank" rel="noopener">App Store presence</a></td>
-            </tr>
-            <tr>
-              <td>Later 2026</td>
-              <td>Group and organization subscription options expand.</td>
-              <td>Apps with household, team, club, education, or creator workflows.</td>
-              <td>Design entitlement sharing, invitation flows, and support policies.</td>
-              <td><a href="https://developer.apple.com/videos/play/wwdc2026/391/" target="_blank" rel="noopener">Subscriptions</a></td>
-            </tr>
-            <tr>
-              <td>iOS 27 SDK</td>
-              <td>Liquid Glass compatibility opt-out is expected to be removed for apps targeting iOS 27 SDK.</td>
-              <td>Apps that still depend on legacy visual compatibility behavior.</td>
-              <td>Audit custom UI, contrast, blur, materials, and layout before the SDK jump.</td>
-              <td><a href="https://developer.apple.com/wwdc26/guides/design/" target="_blank" rel="noopener">Design guide</a></td>
-            </tr>
-            <tr>
-              <td>iOS 27 SDK</td>
-              <td>Scene-based lifecycle and launch-screen readiness remain critical for modern app launch behavior.</td>
-              <td>Older apps still relying only on AppDelegate or missing launch-screen configuration.</td>
-              <td>Migrate to scenes, confirm launch screen entries, and test cold launch on beta OS releases.</td>
-              <td><a href="https://developer.apple.com/wwdc26/guides/ios/" target="_blank" rel="noopener">iOS guide</a></td>
-            </tr>
-            <tr>
-              <td>iOS 27 SDK</td>
-              <td><code>UIScreen.main</code> is flagged as a legacy API — using it for layout breaks apps running in iPhone Mirroring and Stage Manager.</td>
-              <td>UIKit apps that check screen size using <code>UIScreen.main.bounds</code>.</td>
-              <td>Audit any screen size checks and migrate to window- or view-based sizing.</td>
-              <td><a href="https://developer.apple.com/videos/play/wwdc2026/278/" target="_blank" rel="noopener">Modernize UIKit</a></td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <span class="tl-date">September 2026</span>
+            <p class="date-change">Social media declaration becomes mandatory</p>
+            <p class="date-desc">App Store submissions without a completed social media capability declaration will be rejected. The questions will be available to fill out starting July 2026 — use that window to prepare answers before the deadline.</p>
+            <div class="date-who">All teams submitting App Store updates</div>
+            <div class="date-next">Keep the declaration ready before uploading any builds.</div>
+            <div class="sources"><span>Source:</span><a href="https://developer.apple.com/wwdc26/guides/app-store/" target="_blank" rel="noopener">App Store guide</a></div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot tl-dot--sdk"></div>
+          <div class="tl-card">
+            <span class="tl-date tl-date--sdk">iOS 27 SDK · Spring 2027 (Estimated)</span>
+
+            <div class="sdk-item">
+              <p class="date-change">Liquid Glass opt-out removed</p>
+              <p class="date-desc">Apps targeting iOS 27 SDK will no longer be able to opt out of Liquid Glass visual behavior.</p>
+              <div class="date-who">Apps still relying on legacy visual compatibility</div>
+              <div class="date-next">Audit custom UI, contrast, blur, materials, and layout before the SDK jump.</div>
+              <div class="sources"><span>Source:</span><a href="https://developer.apple.com/wwdc26/guides/design/" target="_blank" rel="noopener">Design guide</a></div>
+            </div>
+
+            <div class="sdk-item">
+              <p class="date-change">Scene-based lifecycle required</p>
+              <p class="date-desc">Apps without scene support or a proper launch screen entry may behave incorrectly on cold launch.</p>
+              <div class="date-who">Apps still using only AppDelegate or missing launch screen setup</div>
+              <div class="date-next">Migrate to scenes, confirm launch screen entries, and test cold launch on beta OS.</div>
+              <div class="sources"><span>Source:</span><a href="https://developer.apple.com/wwdc26/guides/ios/" target="_blank" rel="noopener">iOS guide</a></div>
+            </div>
+
+            <div class="sdk-item">
+              <p class="date-change"><code>UIScreen.main</code> is a legacy API</p>
+              <p class="date-desc">Using <code>UIScreen.main</code> for layout breaks apps in iPhone Mirroring and Stage Manager.</p>
+              <div class="date-who">UIKit apps using <code>UIScreen.main.bounds</code> for screen sizing</div>
+              <div class="date-next">Migrate screen size checks to window- or view-based sizing APIs.</div>
+              <div class="sources"><span>Source:</span><a href="https://developer.apple.com/videos/play/wwdc2026/278/" target="_blank" rel="noopener">Modernize UIKit</a></div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </section>
   </main>
