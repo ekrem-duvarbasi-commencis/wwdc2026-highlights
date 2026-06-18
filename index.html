@@ -815,12 +815,130 @@ xcrun coreai-build compile MyModel.aimodel \
         </article>
 
         <article class="card">
-          <h3>Evaluations and MLX make AI behavior measurable</h3>
-          <p>Evaluations help validate prompts and intelligence-powered features before they reach users, while MLX expands local and distributed model experimentation on Apple Silicon.</p>
+          <h3>Test your AI features like you test your code</h3>
+          <p>AI features are probabilistic — they don't always give the same answer twice. Evaluations is a new framework that brings structured, repeatable testing to model-driven features, so you can catch regressions, compare prompts, and ship with confidence. MLX separately expands what you can do locally on Apple Silicon — running and fine-tuning large models across one or multiple Macs.</p>
           <ul class="details-list">
-            <li>Evaluations are meant to make prompt and agent behavior testable inside the development workflow.</li>
-            <li>MLX adds support for Metal 4, GPU Neural Accelerators, and distributed training across multiple Macs using RDMA over Thunderbolt.</li>
+            <li>An evaluation is a dataset of prompts + expected outputs, a subject (your feature), evaluators that score each response, and an aggregation step — all running as a Swift Testing test via <code>@Test(.evaluates(...))</code>, with results shown directly in Xcode's Report navigator.</li>
+            <li>For agentic features, <code>TrajectoryExpectation</code> lets you assert not just what the model said, but which tools it called, in what order, and with what arguments — catching silent failures like a wrong tool or bad argument value.</li>
+            <li>MLX now runs agentic workflows (e.g. OpenCode) entirely on-device, and can distribute inference or fine-tuning across multiple Macs over Thunderbolt using RDMA — letting a few machines on your desk replace expensive cloud infrastructure.</li>
           </ul>
+
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code examples
+            </summary>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">1 · Basic evaluation with metrics</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Define a dataset, a subject (your feature), evaluators that score each response, and run it as a Swift Testing test. Results appear in Xcode's Report navigator.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">import Evaluations
+import FoundationModels
+import Testing
+
+struct LetterCountEvaluation: Evaluation {
+    let dataset = ArrayLoader(samples: [
+        ModelSample(prompt: "Count the letter 'r' in 'strawberry'.", expected: 3),
+        ModelSample(prompt: "How many a's are in 'banana'?", expected: 3),
+    ])
+
+    let exactMatch = Metric("ExactMatch")
+
+    func subject(from sample: ModelSample&lt;Int&gt;) async throws -> ModelSubject&lt;Int&gt; {
+        let session = LanguageModelSession()
+        let response = try await session.respond(to: sample.prompt, generating: Int.self)
+        return ModelSubject(value: response.content, transcript: session.transcript.structuredTranscript)
+    }
+
+    var evaluators: Evaluators {
+        Evaluator { input, subject in
+            guard let expected = input.expected else { return exactMatch.ignore() }
+            return subject.value == expected ? exactMatch.passing() : exactMatch.failing()
+        }
+    }
+
+    func aggregateMetrics(using aggregator: inout MetricsAggregator) {
+        aggregator.computeMean(of: exactMatch)
+    }
+}
+
+struct LetterCountTests {
+    static let evaluation = LetterCountEvaluation()
+
+    @Test(.evaluates(Self.evaluation))
+    func letterCounting() async throws {
+        let result = EvaluationContext.current.result
+        let score = result.aggregateValue(.mean(of: Self.evaluation.exactMatch))
+        #expect(score > 0.8)
+    }
+}</code></pre>
+              </div>
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">2 · Tool-calling evaluation with trajectory expectations</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">For agentic features, assert which tools the model must call, in what order, and with what argument values. Supports ordered, unordered, and disallowed expectations.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">let toolsAllPass = Metric("ToolsAllPass")
+let toolsPercentagePass = Metric("ToolsPercentagePass")
+
+// "Start movie night" must dim lights first, then turn on the TV — order matters.
+ModelSample(
+    prompt: "Start movie night.",
+    expectations: TrajectoryExpectation(
+        ordered: [
+            ToolExpectation("set_lights", arguments: [
+                .exact(argumentName: "room", value: .string("living room")),
+                .range(argumentName: "brightness", minimum: 5, maximum: 40),
+            ]),
+            ToolExpectation("set_tv", arguments: [
+                .exact(argumentName: "power", value: .string("on")),
+            ]),
+        ]
+    )
+)
+
+// Score tool calls: ToolsAllPass is a strict pass/fail,
+// ToolsPercentagePass gives a 0–1 improvement signal.
+var evaluators: Evaluators {
+    ToolCallEvaluator(allPass: toolsAllPass, percentagePass: toolsPercentagePass)
+}
+
+func aggregateMetrics(using aggregator: inout MetricsAggregator) {
+    aggregator.group("Tool Calling") { group in
+        group.computeMean(of: toolsAllPass)
+        group.computeMean(of: toolsPercentagePass)
+    }
+}</code></pre>
+              </div>
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">3 · Generate a synthetic dataset from a few seed samples</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Writing hundreds of test cases by hand is impractical. Call <code>makeSamples</code> on your seed dataset to have the model expand it automatically, then validate and review before using it in evaluations.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// Start with a small hand-written seed set.
+let seedDataset: [ModelSample&lt;TaskItem&gt;] = [ /* your seed samples */ ]
+
+// Expand to 20 samples using a model. A validator rejects bad outputs during generation.
+var expanded: [ModelSample&lt;TaskItem&gt;] = []
+for try await sample in seedDataset.makeSamples(
+    Prompt("Generate realistic to-do list items for a busy professional."),
+    targetCount: 20,
+    validator: { sample in
+        guard let task = sample.expected else { return false }
+        return !task.title.isEmpty
+    }
+) {
+    expanded.append(sample)
+}</code></pre>
+              </div>
+
+            </div>
+          </details>
+
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/298/" target="_blank" rel="noopener">Evaluations framework</a><a href="https://developer.apple.com/videos/play/wwdc2026/299/" target="_blank" rel="noopener">Agentic evaluations</a><a href="https://developer.apple.com/videos/play/wwdc2026/232/" target="_blank" rel="noopener">Local agentic AI with MLX</a><a href="https://developer.apple.com/videos/play/wwdc2026/233/" target="_blank" rel="noopener">Distributed MLX</a></div>
         </article>
       </div>
