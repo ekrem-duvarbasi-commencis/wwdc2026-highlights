@@ -366,6 +366,8 @@
       <a href="#siri">Siri</a>
       <a href="#ai">AI Frameworks</a>
       <a href="#xcode">Xcode</a>
+      <a href="#swift">Swift 6.4</a>
+      <a href="#uikit">UIKit</a>
       <a href="#swiftui">SwiftUI</a>
       <a href="#appstore">App Store</a>
       <a href="#spatial">Spatial & Web</a>
@@ -1037,45 +1039,362 @@ for try await sample in seedDataset.makeSamples(
       </div>
     </section>
 
-    <section class="section" id="swiftui">
+    <section class="section" id="swift">
       <div class="section-header">
-        <div class="label">Most Important</div>
-        <h2>SwiftUI, Swift, SwiftData, and testing get practical upgrades.</h2>
-        <p>The platform updates focus on faster UI iteration, better documents and lists, richer drag and drop, improved graphics, SwiftData persistence, and smoother test migration.</p>
+        <div class="label">Swift 6.4</div>
+        <h2>Swift 6.4 brings ergonomics improvements, new library types, and better testing.</h2>
+        <p>Swift 6.4 brings language ergonomics improvements, improved C and Java interoperability, WebAssembly support, ownership-safe standard library types, and Swift Testing / XCTest interop. UIKit and AppKit also get practical modernization paths with Xcode agent help.</p>
       </div>
 
       <div class="card-grid">
+
         <article class="card">
-          <h3>SwiftUI improves documents, toolbars, and interaction</h3>
-          <p>SwiftUI adds a broader Document API, more toolbar control, reorderable containers, swipe actions in scroll views, and performance/data-flow improvements.</p>
+          <h3>Everyday language improvements</h3>
+          <p>Swift 6.4 trims common boilerplate and gives you better tools for managing API evolution.</p>
           <ul class="details-list">
-            <li>ReadableDocument and WritableDocument support async, incremental disk operations and progress reporting.</li>
-            <li>New reorderable container APIs apply beyond List, including grids and custom layouts.</li>
-            <li>Toolbar APIs such as visibilityPriority, toolbarOverflowMenu, topBarPinnedTrailing, and toolbarMinimizeBehavior give apps finer control as layouts resize.</li>
+            <li><strong><code>anyAppleOS</code> availability:</strong> write <code>#available(anyAppleOS 27, *)</code> instead of listing iOS, macOS, watchOS, and tvOS separately.</li>
+            <li><strong><code>@diagnose</code> attribute:</strong> attach a custom warning or error to any API — great for nudging teammates away from deprecated code without removing it yet.</li>
+            <li><strong>Module selectors (<code>::</code>):</strong> when two frameworks share a type name, write <code>Payments::Order</code> instead of the full module path. Less noise, same clarity.</li>
           </ul>
-          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/269/" target="_blank" rel="noopener">What is new in SwiftUI</a><a href="https://developer.apple.com/videos/play/wwdc2026/271/" target="_blank" rel="noopener">Drag and drop</a><a href="https://developer.apple.com/videos/play/wwdc2026/321/" target="_blank" rel="noopener">Lazy stacks and scrolling</a><a href="https://developer.apple.com/videos/play/wwdc2026/322/" target="_blank" rel="noopener">Graphics effects</a></div>
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
+            </summary>
+            <div style="margin-top:10px;">
+              <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">anyAppleOS · @diagnose · Module selectors</div>
+              </div>
+              <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// anyAppleOS — one guard instead of four
+if #available(anyAppleOS 27, *) {
+    enableNewFeature()
+}
+
+// @diagnose — warn teammates at the call site
+@diagnose("Use fetchUser(id:) instead", .warning)
+func getUser(_ id: Int) -> User { … }
+
+// Module selectors — no more long prefixes
+import Payments
+import Orders
+let order: Payments::Order = …  // unambiguous</code></pre>
+            </div>
+          </details>
+          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/262/" target="_blank" rel="noopener">What's new in Swift</a><a href="https://developer.apple.com/wwdc26/guides/swift/" target="_blank" rel="noopener">Swift guide</a></div>
         </article>
 
         <article class="card">
-          <h3>Swift 6.4 and testing smooth everyday development</h3>
-          <p>Swift 6.4 brings everyday language improvements, Foundation performance gains, and Swift Testing interoperability with XCTest for incremental migration.</p>
+          <h3>Better interoperability and a faster Foundation</h3>
+          <p>Swift 6.4 makes it easier to call Swift from C, spawn child processes safely, and benefits from a much faster URL parsing implementation in Foundation.</p>
           <ul class="details-list">
-            <li>Swift 6.4 includes simplified availability syntax with anyAppleOS, async defer, noncopyable iteration, and finer warning control through @diagnose.</li>
-            <li>Foundation URL parsing is called out as up to four times faster.</li>
-            <li>Swift Testing and XCTest interoperability make gradual test migration more realistic.</li>
+            <li><strong>Swift-C interoperability (<code>@C</code>):</strong> mark a Swift function with <code>@C</code> and it's callable directly from C — no Objective-C bridging header needed. Useful for shared libraries and CLI tools.</li>
+            <li><strong>Subprocess 1.0:</strong> a new standard library for launching and managing child processes. Replaces ad-hoc <code>Process</code> usage with a clean async/await API that works the same on Apple platforms, Linux, and Windows.</li>
+            <li><strong>Foundation URL parsing:</strong> up to <strong>4× faster</strong> — no code changes needed, apps just get the speedup.</li>
           </ul>
-          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/262/" target="_blank" rel="noopener">What is new in Swift</a><a href="https://developer.apple.com/videos/play/wwdc2026/267/" target="_blank" rel="noopener">Migrate to Swift Testing</a><a href="https://developer.apple.com/wwdc26/guides/swift/" target="_blank" rel="noopener">Swift guide</a></div>
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
+            </summary>
+            <div style="margin-top:10px;">
+              <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">@C attribute · Subprocess</div>
+              </div>
+              <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// @C — expose Swift directly to C callers
+@C public func computeChecksum(_ data: UnsafeBufferPointer<UInt8>) -> UInt32 { … }
+
+// Subprocess — run a shell command with async/await
+import Subprocess
+let result = try await Subprocess.run(
+    .named("ffmpeg"),
+    arguments: ["-i", inputPath, outputPath]
+)
+print(result.standardOutput)</code></pre>
+            </div>
+          </details>
+          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/262/" target="_blank" rel="noopener">What's new in Swift</a><a href="https://developer.apple.com/wwdc26/guides/swift/" target="_blank" rel="noopener">Swift guide</a></div>
         </article>
 
         <article class="card">
-          <h3>UIKit and AppKit modernization still matter</h3>
-          <p>WWDC26 includes modernization paths for existing UIKit and AppKit apps, including SwiftUI interop where it makes sense.</p>
+          <h3>New ownership types and Swift Testing improvements</h3>
+          <p>New standard library types make it easier to write safe, high-performance code. Swift Testing now runs side-by-side with XCTest, so you can migrate tests gradually.</p>
           <ul class="details-list">
-            <li>Modernization lands best around real pain points: navigation, state ownership, accessibility, document handling, and previewability.</li>
-            <li>SwiftUI can be introduced inside stable UIKit or AppKit flows without turning the whole app into a rewrite project.</li>
+            <li><strong><code>UniqueBox</code>, <code>UniqueArray</code>, <code>Ref</code>:</strong> new types that work with Swift's ownership system. Think of them as safer alternatives to raw pointers when you need tight control over memory — without manual allocation.</li>
+            <li><strong>Swift Testing + XCTest interop:</strong> both test frameworks can now live in the same target. You can migrate one test file at a time instead of rewriting everything at once.</li>
+          </ul>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/262/" target="_blank" rel="noopener">What's new in Swift</a><a href="https://developer.apple.com/videos/play/wwdc2026/267/" target="_blank" rel="noopener">Migrate to Swift Testing</a><a href="https://developer.apple.com/wwdc26/guides/swift/" target="_blank" rel="noopener">Swift guide</a></div>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="section" id="uikit">
+      <div class="section-header">
+        <div class="label">UIKit &amp; AppKit</div>
+        <h2>UIKit and AppKit get clearer modernization paths — with Xcode agent help.</h2>
+        <p>WWDC26 brings practical guides for updating UIKit and AppKit apps, an Xcode 27 agent skill that can apply many fixes automatically, and clearer guidance on where SwiftUI bridging makes the most sense.</p>
+      </div>
+
+      <div class="card-grid">
+
+        <article class="card">
+          <h3>UIKit and AppKit modernization is clearer — with Xcode agent help</h3>
+          <p>WWDC26 includes practical modernization guides for both UIKit and AppKit, with an Xcode 27 agent skill that can apply many changes automatically.</p>
+          <ul class="details-list">
+            <li><strong>UIKit:</strong> four legacy API patterns break correctness in iPhone Mirroring and Stage Manager — app lifecycle (AppDelegate-only), <code>UIScreen.main</code>, user interface idiom checks, and interface orientation. New <code>UIView</code> body protocols also modernize motion and location update handling. An Xcode agent skill can help enumerate and fix these across your codebase.</li>
+            <li><strong>AppKit:</strong> macOS Golden Gate brings Liquid Glass to AppKit apps. A new <em>concentricity</em> model ensures nested corners share a consistent radius relationship. The session also covers gesture recognizers for input handling and graceful state restoration via improved <code>NSUserActivity</code> support.</li>
+            <li><strong>SwiftUI bridging (session 272):</strong> embed SwiftUI views in existing UIKit or AppKit hierarchies — most useful around navigation, state ownership, accessibility, document handling, and previewability, without a full rewrite.</li>
           </ul>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/278/" target="_blank" rel="noopener">Modernize UIKit</a><a href="https://developer.apple.com/videos/play/wwdc2026/289/" target="_blank" rel="noopener">Modernize AppKit</a><a href="https://developer.apple.com/videos/play/wwdc2026/272/" target="_blank" rel="noopener">SwiftUI with AppKit/UIKit</a></div>
         </article>
+
+      </div>
+    </section>
+
+    <section class="section" id="swiftui">
+      <div class="section-header">
+        <div class="label">Most Important</div>
+        <h2>SwiftUI gets Liquid Glass, a new Document API, and meaningful data-flow wins.</h2>
+        <p>WWDC 2026 brings Liquid Glass across all platforms, a powerful async Document API, fine-grained toolbar control, richer reordering and swipe actions, <code>AsyncImage</code> HTTP caching, <code>@State</code> as a macro, lazy-loading internals, and composable advanced graphics effects.</p>
+      </div>
+
+      <div class="card-grid">
+
+        <article class="card">
+          <h3>New Document API gives apps direct, async control over disk access</h3>
+          <img class="card-image" src="images/swiftui-documentation.png" alt="SwiftUI Document API" loading="lazy" decoding="async" />
+          <p>Two new protocols let you read and write files asynchronously, with built-in progress reporting.</p>
+          <ul class="details-list">
+            <li>Conform to <code>WritableDocument</code> / <code>ReadableDocument</code> to handle file I/O asynchronously — no blocking the main thread.</li>
+            <li>Progress reporting works automatically via Foundation's Subprogress — users see a real save indicator without any extra code.</li>
+            <li>Use <code>DocumentCreationSource</code> to offer multiple templates in the same app — e.g. Blank vs. From Template — each with its own <code>NewDocumentButton</code>.</li>
+          </ul>
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
+            </summary>
+            <div style="margin-top:10px;">
+              <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">WritableDocument + DocumentCreationSource</div>
+                <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Conform to <code>WritableDocument</code>/<code>ReadableDocument</code> for async disk access, and declare multiple creation sources for template support.</p>
+              </div>
+              <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">struct NoteDocument: WritableDocument, ReadableDocument {
+    var text: String
+
+    init(configuration: ReadConfiguration) async throws {
+        let data = try configuration.file.regularFileContents
+            .unwrap(throwing: CocoaError(.fileReadCorruptFile))
+        self.text = String(decoding: data, as: UTF8.self)
+    }
+
+    func fileWrapper(configuration: WriteConfiguration) async throws -> FileWrapper {
+        FileWrapper(regularFileWithContents: Data(text.utf8))
+    }
+}
+
+struct ContentView: View {
+    var body: some View {
+        DocumentGroup(newDocument: NoteDocument(text: "")) { file in
+            TextEditor(text: file.$document.text)
+        } creationSources: {
+            DocumentCreationSource("Blank Note") {
+                NoteDocument(text: "")
+            }
+            DocumentCreationSource("From Template") {
+                NoteDocument(text: "# Title\n\nStart writing…")
+            }
+        }
+    }
+}</code></pre>
+            </div>
+          </details>
+          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/269/" target="_blank" rel="noopener">What's new in SwiftUI</a><a href="https://developer.apple.com/documentation/SwiftUI/DocumentGroup" target="_blank" rel="noopener">DocumentGroup docs</a><a href="https://developer.apple.com/wwdc26/guides/swiftui/" target="_blank" rel="noopener">SwiftUI guide</a></div>
+        </article>
+
+        <article class="card">
+          <h3>Toolbar APIs give precise control over visibility, overflow, and auto-minimizing</h3>
+          <p>Four new modifiers let you decide exactly what happens to toolbar items when space gets tight.</p>
+          <ul class="details-list">
+            <li><code>visibilityPriority</code> — mark a group as low priority so it collapses first when the toolbar gets crowded.</li>
+            <li><code>toolbarOverflowMenu</code> — always move secondary actions into an overflow menu, regardless of available space.</li>
+            <li><code>topBarPinnedTrailing</code> — keep a critical action (like Share) pinned to the right edge at all times.</li>
+            <li><code>toolbarMinimizeBehavior(.onScroll)</code> — auto-hide the navigation bar while scrolling to give content more room.</li>
+          </ul>
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
+            </summary>
+            <div style="margin-top:10px;">
+              <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">Toolbar visibility, overflow, and auto-collapse</div>
+                <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Combine the new modifiers to control which items survive layout compression and how the navigation bar behaves while scrolling.</p>
+              </div>
+              <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">NavigationStack {
+    List(items) { item in ItemRow(item: item) }
+    .toolbar {
+        ToolbarItemGroup(placement: .topBarLeading) {
+            FilterButton()
+            SortButton()
+        }
+        .visibilityPriority(.low) // collapse first when space is tight
+
+        ToolbarItem(placement: .topBarPinnedTrailing) {
+            ShareLink(item: shareURL) // always visible, pinned to trailing
+        }
+    }
+    .toolbarOverflowMenu {
+        // always in overflow regardless of available space
+        ExportButton()
+        PrintButton()
+    }
+    .toolbarMinimizeBehavior(.onScroll)
+    .navigationTitle("Items")
+}</code></pre>
+            </div>
+          </details>
+          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/269/" target="_blank" rel="noopener">What's new in SwiftUI</a><a href="https://developer.apple.com/documentation/SwiftUI/Toolbars" target="_blank" rel="noopener">Toolbars docs</a><a href="https://developer.apple.com/wwdc26/guides/swiftui/" target="_blank" rel="noopener">SwiftUI guide</a></div>
+        </article>
+
+        <article class="card">
+          <h3>Reordering, swipe actions, and presentations work across more containers</h3>
+          <p>Drag-to-reorder, swipe actions, and confirmation dialogs all work in more places — not just <code>List</code>.</p>
+          <ul class="details-list">
+            <li>Drag-to-reorder now works in grids, sections, and custom layouts using the same API as <code>List</code>. Also new on <strong>watchOS</strong>.</li>
+            <li>Add <code>.swipeActionsContainer()</code> to any <code>ScrollView</code> to enable swipe actions on every row inside it.</li>
+            <li>Confirmation dialogs now use the same item-binding pattern as sheets — set a value, the dialog appears automatically.</li>
+            <li>You can also drag multiple items at once and customize the drag lifecycle to match your app's rules.</li>
+          </ul>
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
+            </summary>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">Reordering in a LazyVGrid</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">The reorderable API that works on <code>List</code> rows now applies to grid cells and other containers.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">@State private var items = Item.sampleItems
+
+LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
+    ForEach($items) { $item in
+        ItemCard(item: item)
+    }
+    .reorderable(with: $items)
+}</code></pre>
+              </div>
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">Swipe actions on ScrollView + item-bound alert</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);"><code>swipeActionsContainer</code> enables swipe actions on any view inside a <code>ScrollView</code>. Confirmation alerts now use the same item-binding pattern as sheets.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">@State private var itemToDelete: Item?
+
+ScrollView {
+    LazyVStack {
+        ForEach(items) { item in
+            ItemRow(item: item)
+                .swipeActions(edge: .trailing) {
+                    Button(role: .destructive) {
+                        itemToDelete = item // triggers confirmation dialog
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
+        }
+    }
+}
+.swipeActionsContainer()
+.confirmationDialog(
+    "Delete item?",
+    item: $itemToDelete          // item-binding pattern — same as sheet(item:)
+) { item in
+    Button("Delete \(item.name)", role: .destructive) { delete(item) }
+}</code></pre>
+              </div>
+            </div>
+          </details>
+          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/269/" target="_blank" rel="noopener">What's new in SwiftUI</a><a href="https://developer.apple.com/videos/play/wwdc2026/271/" target="_blank" rel="noopener">Drag and drop code-along</a><a href="https://developer.apple.com/documentation/SwiftUI/Reordering-items-in-lists-stacks-grids-and-custom-layouts" target="_blank" rel="noopener">Reordering docs</a></div>
+        </article>
+
+        <article class="card">
+          <h3>AsyncImage caches by default, @State becomes a macro, and builds get faster</h3>
+          <p><code>AsyncImage</code> now caches automatically, <code>@State</code> initializes classes only once, and Xcode 27 builds are faster — all with no code changes required.</p>
+          <ul class="details-list">
+            <li><code>AsyncImage</code> respects HTTP cache headers by default — images are cached automatically. Use <code>asyncImageURLSession</code> to override the cache policy if needed.</li>
+            <li><code>@State</code> is now a macro. Classes inside it are created once per view lifetime, not on every parent re-render.</li>
+            <li><code>ViewBuilder</code> is now <code>ContentBuilder</code> internally, which noticeably speeds up Xcode 27 build times. Existing code keeps working — see <a href="https://developer.apple.com/documentation/Technotes/tn3211-resolving-swiftUI-source-incompatibilities-for-state-and-contentbuilder" target="_blank" rel="noopener">TN3211</a> if you hit any source incompatibilities.</li>
+          </ul>
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
+            </summary>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">AsyncImage with custom URLSession cache</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">By default, <code>AsyncImage</code> now uses HTTP caching. Use <code>asyncImageURLSession</code> to supply a custom cache policy.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// Default — HTTP cache headers respected automatically, no code needed
+AsyncImage(url: thumbnailURL)
+
+// Custom 100 MB memory + 500 MB disk cache
+let config = URLSessionConfiguration.default
+config.urlCache = URLCache(
+    memoryCapacity: 100_000_000,
+    diskCapacity:   500_000_000
+)
+AsyncImage(url: thumbnailURL)
+    .asyncImageURLSession(URLSession(configuration: config))</code></pre>
+              </div>
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">@State macro — lazy class initialization</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);"><code>@State</code> is now a Swift macro. Class instances are created once per view lifetime — not on every parent re-render.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">struct PhotoBrowser: View {
+    // PhotoViewModel() is now created lazily — once per view lifetime.
+    // Before the macro, it was re-created on every parent re-render.
+    @State private var model = PhotoViewModel()
+
+    var body: some View {
+        PhotoGrid(model: model)
+    }
+}</code></pre>
+              </div>
+            </div>
+          </details>
+          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/269/" target="_blank" rel="noopener">What's new in SwiftUI</a><a href="https://developer.apple.com/documentation/SwiftUI/AsyncImage" target="_blank" rel="noopener">AsyncImage docs</a><a href="https://developer.apple.com/documentation/SwiftUI/State()" target="_blank" rel="noopener">State() macro docs</a><a href="https://developer.apple.com/documentation/Technotes/tn3211-resolving-swiftUI-source-incompatibilities-for-state-and-contentbuilder" target="_blank" rel="noopener">TN3211: State & ContentBuilder</a></div>
+        </article>
+
+        <article class="card">
+          <h3>Lazy stacks and scrolling internals are documented and optimizable</h3>
+          <p>Apple has documented how lazy stacks work under the hood — useful reading if you're debugging layout jumps or scroll glitches.</p>
+          <ul class="details-list">
+            <li><strong>Size estimation:</strong> lazy stacks estimate row heights before rendering. Provide accurate estimates to avoid layout jumps when cells load in.</li>
+            <li><strong>Prefetching:</strong> use <code>onPrefetchTask</code> to kick off network requests before a cell scrolls into view.</li>
+            <li><strong>Programmatic scrolling:</strong> use <code>scrollPosition(id:)</code> rather than manual offset math — it handles dynamic sizing and avoids position drift after reloads.</li>
+            <li><strong>State in recycled cells:</strong> don't put view-lifetime state in <code>@State</code> inside cells that get recycled — use model-layer state with a stable ID instead.</li>
+          </ul>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/321/" target="_blank" rel="noopener">Dive into lazy stacks and scrolling</a><a href="https://developer.apple.com/documentation/SwiftUI/Grouping-Data-with-Lazy-Stack-Views" target="_blank" rel="noopener">Grouping data with lazy stacks</a></div>
+        </article>
+
+        <article class="card">
+          <h3>Advanced graphics effects compose shaders, timelines, and alignment guides</h3>
+          <p>Rich custom visuals are achievable by composing simple SwiftUI primitives — no custom <code>UIView</code> or Metal code needed.</p>
+          <ul class="details-list">
+            <li><strong>Layer shaders:</strong> use <code>Shader</code> to apply Metal-powered effects (gradients, distortion, color shifts) directly on any SwiftUI view.</li>
+            <li><strong>Time-driven animation:</strong> pair <code>TimelineView</code> with <code>Canvas</code> to keep effects updating at display refresh rate, driven by elapsed time.</li>
+            <li><strong>Alignment guides:</strong> custom alignment guides let you anchor floating elements — like timestamps or tooltips — precisely relative to any other view.</li>
+            <li><strong>The key idea:</strong> chain small, focused modifiers instead of one large drawing block — easier to reuse, test, and swap out.</li>
+          </ul>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/322/" target="_blank" rel="noopener">Compose advanced graphics effects</a><a href="https://developer.apple.com/documentation/SwiftUI/Shader" target="_blank" rel="noopener">Shader docs</a><a href="https://developer.apple.com/documentation/SwiftUI/Composing-advanced-graphics-effects-with-SwiftUI" target="_blank" rel="noopener">Sample code</a><a href="https://developer.apple.com/documentation/SwiftUI/Alignment" target="_blank" rel="noopener">Alignment docs</a></div>
+        </article>
+
       </div>
     </section>
 
