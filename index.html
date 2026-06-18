@@ -79,7 +79,7 @@
       font-size: clamp(16px, 2vw, 20px);
     }
 
-    .hero-actions, .tag-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
     .button {
       display: inline-flex;
       align-items: center;
@@ -193,40 +193,28 @@
       background: transparent;
     }
 
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      min-height: 26px;
-      padding: 3px 10px;
-      border-radius: 999px;
-      background: #eef0f3;
-      color: #34343a;
-      font-size: 12px;
-      font-weight: 700;
-    }
-    .tag.green { background: #e7f5ef; color: var(--green); }
-    .tag.orange { background: #fff1df; color: var(--orange); }
-    .tag.purple { background: #f1eafd; color: var(--purple); }
-
     .sources {
-      padding-top: 14px;
+      padding-top: 10px;
       border-top: 1px solid var(--border);
-      font-size: 13px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
     }
-    .sources span { color: var(--muted); font-weight: 700; margin-right: 2px; }
-    .sources a {
-      display: inline-flex;
-      align-items: center;
-      min-height: 28px;
-      margin: 4px 6px 0 0;
-      padding: 3px 9px;
-      border: 1px solid #c9d8ee;
-      border-radius: 999px;
-      background: #f8fbff;
+    .sources span {
+      margin-right: 4px;
+      color: #7c7c84;
       font-weight: 700;
-      color: var(--accent-dark);
     }
-    .sources a:hover { text-decoration: none; background: #edf5ff; }
+    .sources a {
+      color: #5f6670;
+      font-weight: 600;
+    }
+    .sources a:not(:last-child)::after {
+      content: ", ";
+      color: #9a9aa2;
+      font-weight: 400;
+    }
+    .sources a:hover { color: var(--accent-dark); text-decoration: underline; }
 
     code {
       padding: 2px 6px;
@@ -315,7 +303,6 @@
 
       <div class="card-grid">
         <article class="card">
-          <div class="tag-row"><span class="tag green">Siri</span><span class="tag">App Intents</span></div>
           <h3>Personal Intelligence across apps</h3>
           <p>Siri can use personal context and app-provided entities to understand richer requests, then connect those requests to actions your app exposes through App Intents.</p>
           <ul class="details-list">
@@ -327,7 +314,6 @@
         </article>
 
         <article class="card">
-          <div class="tag-row"><span class="tag green">Schemas</span><span class="tag purple">Spotlight</span></div>
           <h3>App Schemas make app content actionable</h3>
           <p>Apps describe entities and actions through schemas so Siri, Shortcuts, and Spotlight can reason about real app content instead of fixed trigger phrases.</p>
           <ul class="details-list">
@@ -338,7 +324,6 @@
         </article>
 
         <article class="card">
-          <div class="tag-row"><span class="tag">Testing</span><span class="tag orange">Reliability</span></div>
           <h3>App Intents can be validated through system paths</h3>
           <p>The AppIntentsTesting framework helps teams test Siri, Spotlight, and Shortcuts behavior without treating voice interactions as fragile UI automation.</p>
           <ul class="details-list">
