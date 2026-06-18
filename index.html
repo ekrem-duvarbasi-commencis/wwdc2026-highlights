@@ -151,6 +151,16 @@
     }
 
     .card { padding: 22px; }
+    .card-image {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: contain;
+      margin: 0 0 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #eef0f3;
+    }
     .card h3 { margin-bottom: 8px; font-size: 20px; line-height: 1.2; }
     .card p { color: var(--muted); margin-bottom: 14px; }
     .card strong { color: var(--ink); }
@@ -479,6 +489,7 @@ Do not touch unrelated screens.</code></pre>
 
         <article class="card">
           <h3>Device Hub and Instruments improve debugging loops</h3>
+          <img class="card-image" src="images/device-hub.png" alt="Xcode Device Hub showing connected devices and simulators" loading="eager" decoding="async" />
           <p>Device Hub unifies simulators and real devices, while Instruments sessions focus on responsiveness, agentic app profiling, and verified performance fixes.</p>
           <h4>What you can do</h4>
           <ul class="details-list">
