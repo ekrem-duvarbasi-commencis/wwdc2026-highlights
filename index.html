@@ -954,24 +954,22 @@ for try await sample in seedDataset.makeSamples(
       <div class="card-grid">
         <article class="card">
           <h3>Coding agents in Xcode</h3>
-          <p>Xcode agents can help generate UI prototypes, explain project context, perform repetitive implementation work, and assist across the development cycle.</p>
+          <img class="card-image" src="images/xcode-agent.png" alt="Xcode coding agent conversation sidebar with transcript and artifacts pane" loading="lazy" decoding="async" />
+          <p>Xcode 27 brings a full coding agent into the IDE — a conversation sidebar where you describe what you want and the agent reads your project, writes code, runs builds, fixes errors, and shows you a diff to review, all without leaving Xcode.</p>
           <ul class="details-list">
-            <li>Agents shine on focused work: repetitive migrations, prototype views, test scaffolding, and documentation updates.</li>
-            <li>Clear context helps a lot. A good request names the files, the expected behavior, and the tests that should pass.</li>
-            <li>The developer still owns the result: diffs, tests, and architecture decisions remain part of normal review.</li>
+            <li>The agent works in four modes: <strong>Explore</strong> (understand unfamiliar code), <strong>Build</strong> (implement features or prototypes), <strong>Refine</strong> (polish existing code), and <strong>Orchestrate</strong> (coordinate multi-step changes across files). You can run multiple agents in parallel in separate panes.</li>
+            <li>Give the agent explicit context using <code>@filename</code> or <code>@Symbol</code> in your prompt. The more specific you are — naming the files involved, the expected behavior, and which tests should pass — the better the result.</li>
+            <li>Every change is reviewable: the artifacts pane shows a multicolor diff for each modified file. You can undo a single response or slide back through the full conversation history to restore any prior state (requires a Git repo).</li>
           </ul>
-          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/258/" target="_blank" rel="noopener">What is new in Xcode 27</a><a href="https://developer.apple.com/videos/play/wwdc2026/259/" target="_blank" rel="noopener">Xcode, agents, and you</a><a href="https://developer.apple.com/videos/play/wwdc2026/227/" target="_blank" rel="noopener">UI prototypes using agents</a></div>
-        </article>
 
-        <article class="card">
-          <h3>Localization agents reduce string-catalog work</h3>
-          <p>Localization agents can translate strings, add languages, and handle plural variants with app context and Apple style guidance.</p>
+          <h4 style="margin:16px 0 6px;font-size:14px;font-weight:700;">Localization agents</h4>
+          <p style="margin:0 0 8px;font-size:14px;">Agents can also translate your String Catalogs into new languages, handle plural variants, and apply Apple style guidance — all from within Xcode.</p>
           <ul class="details-list">
-            <li>Localization works better when strings already live in String Catalogs instead of being scattered through views.</li>
-            <li>Context matters for words like "Archive", "Draft", or "Charge", where the right translation depends on the screen.</li>
-            <li>Plural rules, purchase copy, privacy text, and legal language still deserve a careful human pass.</li>
+            <li>Works best when strings are already in String Catalogs rather than scattered through views. Ambiguous words like "Archive", "Draft", or "Charge" benefit from added context comments so the agent picks the right translation.</li>
+            <li>Plural rules, purchase copy, privacy text, and legal language still need a careful human review before shipping.</li>
           </ul>
-          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/213/" target="_blank" rel="noopener">Translate using agents</a><a href="https://developer.apple.com/wwdc26/guides/xcode/" target="_blank" rel="noopener">Xcode guide</a></div>
+
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/258/" target="_blank" rel="noopener">What is new in Xcode 27</a><a href="https://developer.apple.com/videos/play/wwdc2026/259/" target="_blank" rel="noopener">Xcode, agents, and you</a><a href="https://developer.apple.com/videos/play/wwdc2026/227/" target="_blank" rel="noopener">UI prototypes using agents</a><a href="https://developer.apple.com/videos/play/wwdc2026/213/" target="_blank" rel="noopener">Translate using agents</a></div>
         </article>
 
         <article class="card">
