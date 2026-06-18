@@ -338,12 +338,129 @@
 
         <article class="card">
           <h3>App Schemas make app content actionable</h3>
-          <p>Apps describe entities and actions through schemas so Siri, Shortcuts, and Spotlight can reason about real app content instead of fixed trigger phrases.</p>
+          <p>Apps describe entities and actions through schemas so Siri, Shortcuts, and Spotlight can reason about real app content instead of fixed trigger phrases. No specific phrases to define — the system handles language understanding and it improves over time without any code changes.</p>
           <ul class="details-list">
             <li>Important app objects need stable identities and readable names so Siri and Spotlight can find the same things users see in the interface.</li>
             <li>Smaller, composable intents work better because the system can combine them with other app and system actions.</li>
+            <li>Set unsupported schema properties to <code>nil</code> — the system gracefully ignores them and still surfaces your content.</li>
           </ul>
-          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/240/" target="_blank" rel="noopener">Build Siri experiences</a><a href="https://developer.apple.com/videos/play/wwdc2026/343/" target="_blank" rel="noopener">Advanced App Intents</a></div>
+
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
+            </summary>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">1 · Entity Schema</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Conform your model to <code>@AppEntity(schema:)</code> so Siri and Spotlight understand what your content represents. Set unsupported properties to <code>nil</code> — the system gracefully ignores them.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">@AppEntity(schema: .photos.asset)
+struct PlantPhotoEntity: IndexedEntity {
+
+    var displayRepresentation: DisplayRepresentation {
+        DisplayRepresentation(
+            title: "\(photo.name)",
+            subtitle: "\(photo.creationDate.formatted(date: .abbreviated, time: .omitted))"
+        )
+    }
+
+    static let defaultQuery = PlantPhotoEntityQuery()
+    var id: Int { photo.id }
+
+    // Required schema properties
+    var creationDate: Date? { photo.creationDate }
+    var assetType: PhotoAssetType? { .photo }
+    var isFavorite: Bool { photo.isFavorite }
+    var isHidden: Bool { photo.isHidden }
+
+    // Not supported by this app — set to nil
+    var location: PlaceDescriptor? { nil }
+    var aperture: Double? { nil }
+    var filter: PhotoFilterEffectType? { nil }
+
+    var photo: PlantPhoto
+    init(photo: PlantPhoto) { self.photo = photo }
+}</code></pre>
+              </div>
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">2 · Intent Schemas</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Conform your intent to <code>@AppIntent(schema:)</code> so people can trigger it through natural language — no fixed phrases needed. Use <code>isAssistantOnly = true</code> when transitioning away from an older intent.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">@AppIntent(schema: .photos.openAsset)
+struct OpenPlantPhotoIntent: OpenIntent {
+    var target: PlantPhotoEntity
+
+    func perform() async -> some IntentResult {
+        // Navigate to the photo in the app
+        return .result()
+    }
+}
+
+@AppIntent(schema: .photos.createAssets)
+struct CreateAssetsIntent: AppIntent {
+    // Hidden from Shortcuts during transition from an older intent
+    static let isAssistantOnly: Bool = true
+
+    @MainActor
+    func perform() async throws -> some ReturnsValue&lt;[PlantPhotoEntity]&gt; {
+        // Create and return new photo entities
+    }
+}</code></pre>
+              </div>
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">3 · Spotlight Indexing</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Donate entities to a named <code>CSSearchableIndex</code> so the system can surface them. Implement <code>IndexedEntityQuery</code> to handle reindexing requests from the system.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">static func donatePhotos(modelData: ModelData) async throws {
+    let entities = await modelData.plantPhotoEntities
+    try await CSSearchableIndex(name: "PlantJournal_Photos")
+        .indexAppEntities(entities)
+}
+
+struct PlantPhotoQuery: IndexedEntityQuery {
+    func reindexEntities(
+        for identifiers: [PlantPhotoEntity.ID],
+        indexDescription: CSSearchableIndexDescription
+    ) async throws {
+        let photos = try await photoStore.fetch(ids: identifiers)
+        try await CSSearchableIndex(name: "PlantJournal_Photos")
+            .indexAppEntities(photos)
+    }
+
+    func reindexAllEntities(
+        indexDescription: CSSearchableIndexDescription
+    ) async throws {
+        let all = try await photoStore.fetchAll()
+        try await CSSearchableIndex(name: "PlantJournal_Photos")
+            .indexAppEntities(all)
+    }
+}</code></pre>
+              </div>
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">4 · Open Intent for Search Results</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">When Spotlight surfaces your entity in search results, it uses an <code>OpenIntent</code> to navigate into your app. Each entity type needs one.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">struct OpenPlantPhotoIntent: OpenIntent {
+    static let title: LocalizedStringResource = "Open Plant Photo"
+
+    @Parameter(title: "Photo", requestValueDialog: "Which photo?")
+    var target: PlantPhotoEntity
+}</code></pre>
+              </div>
+
+            </div>
+          </details>
+          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
+
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/240/" target="_blank" rel="noopener">Build Siri experiences</a><a href="https://developer.apple.com/videos/play/wwdc2026/343/" target="_blank" rel="noopener">Advanced App Intents</a><a href="https://developer.apple.com/documentation/AppIntents/making-actions-and-content-discoverable-by-apple-intelligence" target="_blank" rel="noopener">Apple Docs</a><a href="https://developer.apple.com/documentation/AppIntents/making-app-entities-available-in-spotlight" target="_blank" rel="noopener">Spotlight indexing</a></div>
         </article>
 
         <article class="card">
