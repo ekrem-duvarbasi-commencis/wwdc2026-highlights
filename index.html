@@ -626,19 +626,104 @@ func testEventAppearsInSpotlight() async throws {
     <section class="section" id="ai">
       <div class="section-header">
         <div class="label">Most Important</div>
-        <h2>On-device and private cloud AI become developer primitives.</h2>
-        <p>WWDC26 adds deeper Foundation Models support, Core AI for custom models, evaluations for agentic behavior, and MLX workflows for Apple Silicon.</p>
+        <h2>AI is now a platform primitive.</h2>
+        <p>Apple bakes on-device and private cloud AI directly into the OS — giving developers powerful, private, cost-free intelligence as a first-class API.</p>
       </div>
 
       <div class="card-grid">
         <article class="card">
           <h3>Foundation Models framework grows into agentic apps</h3>
-          <p>Developers can build experiences with Apple Foundation Models, other language model providers, app tools, multimodal prompts, Dynamic Profiles, and evaluations.</p>
+          <p>Apps can now reason over images and text together, adapt their AI behavior on the fly as the user moves through different tasks, and optionally tap into a more powerful server model — all without managing API keys, servers, or third-party SDKs.</p>
           <ul class="details-list">
-            <li>Multimodal prompts let apps reason over images and text together, while Vision tools such as OCR and barcode reading can be available on-device.</li>
-            <li>Dynamic Profiles let an app change models, tools, and instructions during a continuous session.</li>
-            <li>The Evaluations framework gives teams a source-backed way to test AI behavior beyond normal unit tests.</li>
+            <li>Pass <code>CGImage</code>, <code>CIImage</code>, <code>CVPixelBuffer</code>, or image URLs directly in a prompt via <code>Attachment</code>; built-in Vision tools (<code>OCRTool</code>, <code>BarcodeReaderTool</code>) work on-device with no extra setup.</li>
+            <li>A <code>DynamicProfile</code> re-evaluates instructions and tools before every model request, so switching phases (e.g. image editing → animation editing) automatically updates the active toolset without rebuilding the session.</li>
+            <li>The Private Cloud Compute model requires only one line to adopt: swap <code>SystemLanguageModel()</code> for <code>PrivateCloudComputeLanguageModel()</code>. It offers a 32K-token context and three reasoning levels (<code>.light</code>, <code>.moderate</code>, <code>.deep</code>), with no API keys or token costs.</li>
           </ul>
+
+          <div style="display:flex;align-items:flex-start;gap:8px;background:color-mix(in srgb,#3b82f6 10%,transparent);border:1px solid color-mix(in srgb,#3b82f6 30%,transparent);border-radius:var(--radius);padding:10px 12px;margin-bottom:12px;font-size:13px;line-height:1.5;">
+            <span style="font-size:15px;flex-shrink:0;">ℹ️</span>
+            <div><strong>The server model has a daily limit.</strong> Each user gets a fixed number of requests per day for free. If they run out, they'll need an <strong>iCloud+ subscription</strong> to get more. The on-device model has no such limit. Make sure your app handles the case where the limit is reached — and consider showing users a clear path to upgrade when it happens.</div>
+          </div>
+
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code examples
+            </summary>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">1 · Multimodal prompt with Attachment</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Pass one or more images alongside text inside the trailing closure of <code>respond</code>. Use <code>orientation:</code> when the image lacks embedded rotation metadata (e.g. frames from AVFoundation).</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">func compareImages(imageOne: CGImage, imageTwo: CGImage) async throws -> String {
+    let session = LanguageModelSession()
+    let response = try await session.respond {
+        "Compare these two images using three bullet points:"
+        Attachment(imageOne)
+        Attachment(imageTwo, orientation: .right)
+    }
+    return response.content
+}</code></pre>
+              </div>
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">2 · Dynamic Profile</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Declare a <code>DynamicProfile</code> to switch instructions, tools, and even the underlying model based on app state. The compiler enforces that exactly one <code>Profile</code> is active at a time.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">struct PresentationProfile: LanguageModelSession.DynamicProfile {
+    var pccModel = PrivateCloudComputeLanguageModel()
+    var isEditingImage = true
+    var isEditingAnimation = false
+
+    var body: some LanguageModelSession.DynamicProfile {
+        if isEditingImage {
+            Profile { ImageEditingInstructions() }
+        } else if isEditingAnimation {
+            Profile { AnimationEditingInstructions() }
+                .model(pccModel)
+                .temperature(0.2)
+                .reasoningLevel(.light)
+        } else {
+            Profile { PresentationDynamicInstructions() }
+                .temperature(0.8)
+        }
+    }
+}
+
+let session = LanguageModelSession(profile: PresentationProfile())</code></pre>
+              </div>
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">3 · Private Cloud Compute session</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Route a session through PCC for a 32K context and deep reasoning. Check <code>availability</code> before use and fall back to the on-device model on unsupported versions.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// One-line swap: the rest of your session code is unchanged.
+let session = LanguageModelSession(model: PrivateCloudComputeLanguageModel())
+
+// Check availability before prompting.
+let model = PrivateCloudComputeLanguageModel()
+switch model.availability {
+case .available:
+    // Show your intelligence UI.
+case .unavailable(.deviceNotEligible):
+    // Show an alternative UI.
+default:
+    break
+}
+
+// Enable deep reasoning for complex, multi-step tasks.
+let response = try await session.respond(
+    to: "What are the tradeoffs in this architecture?",
+    contextOptions: ContextOptions(reasoningLevel: .deep)
+)</code></pre>
+              </div>
+
+            </div>
+          </details>
+
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/241/" target="_blank" rel="noopener">Foundation Models updates</a><a href="https://developer.apple.com/videos/play/wwdc2026/242/" target="_blank" rel="noopener">Agentic app experiences</a><a href="https://developer.apple.com/videos/play/wwdc2026/319/" target="_blank" rel="noopener">Private Cloud Compute model</a></div>
         </article>
 
