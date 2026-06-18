@@ -522,13 +522,103 @@ struct PlantPhotoQuery: IndexedEntityQuery {
         </article>
 
         <article class="card">
-          <h3>App Intents can be validated through system paths</h3>
-          <p>The AppIntentsTesting framework helps teams test Siri, Spotlight, and Shortcuts behavior without treating voice interactions as fragile UI automation.</p>
+          <h3>AppIntentsTesting validates Siri, Spotlight, and Shortcuts out-of-process</h3>
+          <p><code>AppIntentsTesting</code> is a new framework (iOS 27+, currently in beta) that lets you execute intents, query entities, and verify Spotlight indexing and view annotations through the exact same infrastructure that Siri and Shortcuts use — without UI automation.</p>
           <ul class="details-list">
-            <li>Entity lookup, missing information, permissions, and localized vocabulary are the places Siri integrations tend to feel brittle.</li>
-            <li>Testing those paths makes App Intents feel more like normal app code and less like a voice-only mystery box.</li>
+            <li>Tests run in a <strong>UI Testing target</strong> against a live app process. <code>IntentDefinitions(bundleIdentifier:)</code> is the single entry point; every intent, entity, and enum is accessed by string name, so the test target never needs to import app types.</li>
+            <li>Covered scenarios include intent execution, entity queries, chaining results between multiple intents, <code>Transferable</code> conformance, Spotlight indexing (<code>spotlightQuery(_:)</code>), and on-screen view annotations (<code>viewAnnotations()</code>).</li>
+            <li>Test-only intents marked <code>isDiscoverable = false</code> and wrapped in <code>#if DEBUG</code> replace fragile UI navigation for test setup and teardown.</li>
           </ul>
-          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/295/" target="_blank" rel="noopener">AppIntentsTesting</a><a href="https://developer.apple.com/videos/play/wwdc2026/344/" target="_blank" rel="noopener">Code-along: Siri</a></div>
+
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
+            </summary>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">1 · Test target setup</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Launch the app and create an <code>IntentDefinitions</code> instance with your bundle ID. This discovers every intent, entity, enum, and query your app registers — no imports of app types needed.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">class AppIntentsTests: XCTestCase {
+    let app = XCUIApplication()
+    var definitions: IntentDefinitions!
+
+    override func setUp() async throws {
+        app.launch()
+        definitions = IntentDefinitions(
+            bundleIdentifier: "com.example.my-app"
+        )
+    }
+}</code></pre>
+              </div>
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">2 · Run an intent &amp; query entities</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Look up an intent by name and call <code>run()</code>. The result supports <code>@dynamicMemberLookup</code>, so you read return-value properties by name. Entity queries work the same way — <code>entities(matching:)</code> simulates how Siri resolves spoken names.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// Run an intent
+func testOpenFavorites() async throws {
+    let result = try await definitions
+        .intents["OpenFavorites"]
+        .makeIntent()
+        .run()
+    XCTAssertEqual(try result.value.count, 5)
+}
+
+// Query an entity the same way Siri resolves names
+func testFindCalendarByName() async throws {
+    let results = try await definitions
+        .entities["CalendarEntity"]
+        .entities(matching: "Work")
+    let name: String = try results[0].name
+    XCTAssertEqual(name, "Work")
+}</code></pre>
+              </div>
+
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">3 · Chain intents &amp; verify Spotlight indexing</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Pass the result of one intent directly into the next — <code>AppIntentsTesting</code> handles cross-intent entity transfer the same way the system does. <code>spotlightQuery(_:)</code> tests whether your entity donations land in the Spotlight index correctly.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// Chain: find a calendar, then create an event on it
+func testCreateEventOnCalendar() async throws {
+    let calendars = try await definitions
+        .entities["CalendarEntity"]
+        .entities(matching: "Work")
+
+    let createResult = try await definitions
+        .intents["CreateEvent"]
+        .makeIntent(title: "Sprint Planning", calendar: calendars[0])
+        .run()
+
+    let event: AnyAppEntity = try createResult.value
+    let addResult = try await definitions
+        .intents["AddAttendee"]
+        .makeIntent(event: event, email: "jada@example.com")
+        .run()
+    let count: Int = try addResult.value.attendeeCount
+    XCTAssertEqual(count, 1)
+}
+
+// Verify Spotlight indexing
+func testEventAppearsInSpotlight() async throws {
+    let results = try await definitions
+        .entities["EventEntity"]
+        .spotlightQuery("Design Review")
+    XCTAssertFalse(results.isEmpty)
+    let title: String = try results[0].title
+    XCTAssertEqual(title, "Design Review")
+}</code></pre>
+              </div>
+
+            </div>
+          </details>
+          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
+
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/295/" target="_blank" rel="noopener">Validate your App Intents adoption with AppIntentsTesting</a><a href="https://developer.apple.com/documentation/AppIntentsTesting/testing-your-app-intents-code" target="_blank" rel="noopener">Testing your App Intents code</a><a href="https://developer.apple.com/documentation/AppIntentsTesting" target="_blank" rel="noopener">AppIntentsTesting docs</a></div>
         </article>
       </div>
     </section>
