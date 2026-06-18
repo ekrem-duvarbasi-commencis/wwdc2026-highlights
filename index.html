@@ -142,7 +142,7 @@
       font-size: 13px;
     }
 
-    .card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .card-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -265,7 +265,6 @@
     .footer p { margin-bottom: 8px; }
 
     @media (max-width: 860px) {
-      .card-grid { grid-template-columns: 1fr; }
       .hero { min-height: 420px; padding-top: 54px; }
     }
 
@@ -307,8 +306,6 @@
   </nav>
 
   <main class="page">
-    <p class="note">Code snippets are intentionally compact and sometimes conceptual; use the linked Apple sessions and documentation for exact API names, requirements, and full samples.</p>
-
     <section class="section" id="siri">
       <div class="section-header">
         <div class="label">Most Important</div>
@@ -337,18 +334,6 @@
             <li>Important app objects need stable identities and readable names so Siri and Spotlight can find the same things users see in the interface.</li>
             <li>Smaller, composable intents work better because the system can combine them with other app and system actions.</li>
           </ul>
-          <pre><code class="language-swift">// Conceptual App Intent using app-specific entity types.
-struct OpenProjectIntent: AppIntent {
-    static var title: LocalizedStringResource = "Open Project"
-
-    @Parameter(title: "Project")
-    var project: ProjectEntity
-
-    func perform() async throws -&gt; some IntentResult {
-        try await ProjectNavigator.open(project.id)
-        return .result()
-    }
-}</code></pre>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/240/" target="_blank" rel="noopener">Build Siri experiences</a><a href="https://developer.apple.com/videos/play/wwdc2026/343/" target="_blank" rel="noopener">Advanced App Intents</a></div>
         </article>
 
@@ -381,15 +366,6 @@ struct OpenProjectIntent: AppIntent {
             <li>Dynamic Profiles let an app change models, tools, and instructions during a continuous session.</li>
             <li>The Evaluations framework gives teams a source-backed way to test AI behavior beyond normal unit tests.</li>
           </ul>
-          <pre><code class="language-swift">// Conceptual tool shape; see Foundation Models docs for exact APIs.
-struct DraftReplyTool {
-    let threadID: MessageThread.ID
-
-    func call(context: ToolContext) async throws -&gt; DraftReply {
-        let thread = try await Messages.load(threadID)
-        return try await ReplyComposer.draft(from: thread)
-    }
-}</code></pre>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/241/" target="_blank" rel="noopener">Foundation Models updates</a><a href="https://developer.apple.com/videos/play/wwdc2026/242/" target="_blank" rel="noopener">Agentic app experiences</a><a href="https://developer.apple.com/videos/play/wwdc2026/319/" target="_blank" rel="noopener">Private Cloud Compute model</a></div>
         </article>
 
@@ -410,15 +386,6 @@ struct DraftReplyTool {
             <li>Evaluations are meant to make prompt and agent behavior testable inside the development workflow.</li>
             <li>MLX adds support for Metal 4, GPU Neural Accelerators, and distributed training across multiple Macs using RDMA over Thunderbolt.</li>
           </ul>
-          <pre><code class="language-swift">// Conceptual evaluation fixture; see Evaluations docs for exact APIs.
-let cases = [
-    EvaluationCase(
-        input: "Summarize this support thread",
-        expected: [.mentionsRefundPolicy, .doesNotInventDates]
-    )
-]
-
-try await Evaluator.run(cases, using: supportAssistant)</code></pre>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/298/" target="_blank" rel="noopener">Evaluations framework</a><a href="https://developer.apple.com/videos/play/wwdc2026/299/" target="_blank" rel="noopener">Agentic evaluations</a><a href="https://developer.apple.com/videos/play/wwdc2026/232/" target="_blank" rel="noopener">Local agentic AI with MLX</a><a href="https://developer.apple.com/videos/play/wwdc2026/233/" target="_blank" rel="noopener">Distributed MLX</a></div>
         </article>
       </div>
@@ -440,10 +407,6 @@ try await Evaluator.run(cases, using: supportAssistant)</code></pre>
             <li>Clear context helps a lot. A good request names the files, the expected behavior, and the tests that should pass.</li>
             <li>The developer still owns the result: diffs, tests, and architecture decisions remain part of normal review.</li>
           </ul>
-          <pre><code class="language-plaintext">Update SettingsView to use the new account model.
-Keep public API unchanged.
-Add Swift Testing coverage for loading, error, and empty states.
-Do not touch unrelated screens.</code></pre>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/258/" target="_blank" rel="noopener">What is new in Xcode 27</a><a href="https://developer.apple.com/videos/play/wwdc2026/259/" target="_blank" rel="noopener">Xcode, agents, and you</a><a href="https://developer.apple.com/videos/play/wwdc2026/227/" target="_blank" rel="noopener">UI prototypes using agents</a></div>
         </article>
 
@@ -455,31 +418,30 @@ Do not touch unrelated screens.</code></pre>
             <li>Context matters for words like "Archive", "Draft", or "Charge", where the right translation depends on the screen.</li>
             <li>Plural rules, purchase copy, privacy text, and legal language still deserve a careful human pass.</li>
           </ul>
-          <pre><code class="language-swift">Text("subscription.days.remaining \(daysLeft)")
-    .contentTransition(.numericText())</code></pre>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/213/" target="_blank" rel="noopener">Translate using agents</a><a href="https://developer.apple.com/wwdc26/guides/xcode/" target="_blank" rel="noopener">Xcode guide</a></div>
         </article>
 
         <article class="card">
-          <h3>Device Hub and Instruments improve debugging loops</h3>
+          <h3>Device Hub speeds up device and simulator workflows</h3>
           <img class="card-image" src="images/device-hub.png" alt="Xcode Device Hub showing connected devices and simulators" loading="eager" decoding="async" />
-          <p>Device Hub unifies simulators and real devices, while Instruments sessions focus on responsiveness, agentic app profiling, and verified performance fixes.</p>
+          <p>Device Hub is Xcode's central workspace for managing development devices and simulators, making it easier to prepare test targets, inspect their state, and move quickly from setup to bug reproduction.</p>
           <ul class="details-list">
-            <li>Device Hub makes simulator and hardware work feel less scattered, especially when a bug only appears on one target.</li>
-            <li>Performance work becomes easier to trust when traces before and after a fix can be compared side by side.</li>
-            <li>Agentic flows may need separate profiling because model calls and tool execution change the timing of normal UI paths.</li>
+            <li>Developers can control connected devices and simulators from one place instead of jumping between separate Xcode windows and system tools.</li>
+            <li>Organization and configuration tools help keep the right devices, runtimes, and testing setups ready for repeated debugging work.</li>
+            <li>Device Hub pairs with <code>devicectl</code> when teams need command-line device management or automation around the same workflows.</li>
           </ul>
-          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/260/" target="_blank" rel="noopener">Device Hub</a><a href="https://developer.apple.com/videos/play/wwdc2026/268/" target="_blank" rel="noopener">Improve responsiveness</a><a href="https://developer.apple.com/videos/play/wwdc2026/243/" target="_blank" rel="noopener">Profile agentic apps</a><a href="https://developer.apple.com/videos/play/wwdc2026/261/" target="_blank" rel="noopener">Xcode Cloud</a></div>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/260/" target="_blank" rel="noopener">Device Hub</a><a href="https://developer.apple.com/documentation/Xcode/device-hub" target="_blank" rel="noopener">Device Hub docs</a></div>
         </article>
 
         <article class="card">
           <h3>Customizable toolbar keeps Xcode workflows closer</h3>
           <img class="card-image" src="images/customizable-toolbar.png" alt="Xcode customizable toolbar layouts for different development workflows" loading="lazy" decoding="async" />
-          <p>Xcode 27 emphasizes customization alongside agentic coding, so the development environment can better match how different people and teams work.</p>
+          <p>Xcode 27 revamps the workspace toolbar so core navigation, editor controls, coding-agent access, and run destination choices are easier to reach and arrange around the way you work.</p>
           <ul class="details-list">
-            <li>The toolbar can support different rhythms, from writing code to reviewing, debugging, profiling, or testing on devices.</li>
-            <li>The source material frames this as part of making Xcode adapt to the way developers work.</li>
-            <li>For teams, a familiar layout can make pairing and code review feel less disorienting.</li>
+            <li>History navigation and editor controls move from the jump bar into the toolbar, while build activity appears beneath the window title.</li>
+            <li>The center area includes the coding-agent entry point plus the scheme and destination picker.</li>
+            <li>Top-right controls add tabs and editor panes, customize editor settings, and switch between canvas, Assistant Editor, and source-control review modes.</li>
+            <li>The branch picker moves to the bottom bar, and toolbar items can be added, removed, and reordered.</li>
           </ul>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/258/" target="_blank" rel="noopener">What is new in Xcode 27</a><a href="https://developer.apple.com/wwdc26/guides/xcode/" target="_blank" rel="noopener">Xcode guide</a></div>
         </article>
@@ -502,12 +464,6 @@ Do not touch unrelated screens.</code></pre>
             <li>New reorderable container APIs apply beyond List, including grids and custom layouts.</li>
             <li>Toolbar APIs such as visibilityPriority, toolbarOverflowMenu, topBarPinnedTrailing, and toolbarMinimizeBehavior give apps finer control as layouts resize.</li>
           </ul>
-          <pre><code class="language-swift">List($items, editActions: .move) { $item in
-    TextField("Title", text: $item.title)
-}
-.toolbar {
-    Button("New") { items.append(.empty) }
-}</code></pre>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/269/" target="_blank" rel="noopener">What is new in SwiftUI</a><a href="https://developer.apple.com/videos/play/wwdc2026/271/" target="_blank" rel="noopener">Drag and drop</a><a href="https://developer.apple.com/videos/play/wwdc2026/321/" target="_blank" rel="noopener">Lazy stacks and scrolling</a><a href="https://developer.apple.com/videos/play/wwdc2026/322/" target="_blank" rel="noopener">Graphics effects</a></div>
         </article>
 
@@ -519,13 +475,6 @@ Do not touch unrelated screens.</code></pre>
             <li>Foundation URL parsing is called out as up to four times faster.</li>
             <li>Swift Testing and XCTest interoperability make gradual test migration more realistic.</li>
           </ul>
-          <pre><code class="language-swift">// App-specific store/model types keep the test intentionally small.
-@Test func savesDraftTitle() async throws {
-    let store = DraftStore.inMemory()
-    try await store.save(Draft(title: "WWDC notes"))
-
-    #expect(await store.drafts.count == 1)
-}</code></pre>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/262/" target="_blank" rel="noopener">What is new in Swift</a><a href="https://developer.apple.com/videos/play/wwdc2026/267/" target="_blank" rel="noopener">Migrate to Swift Testing</a><a href="https://developer.apple.com/wwdc26/guides/swift/" target="_blank" rel="noopener">Swift guide</a></div>
         </article>
 
@@ -536,10 +485,6 @@ Do not touch unrelated screens.</code></pre>
             <li>Modernization lands best around real pain points: navigation, state ownership, accessibility, document handling, and previewability.</li>
             <li>SwiftUI can be introduced inside stable UIKit or AppKit flows without turning the whole app into a rewrite project.</li>
           </ul>
-          <pre><code class="language-swift">// One incremental way to host a SwiftUI screen in UIKit.
-let details = DetailsPanel(model: model)
-let host = UIHostingController(rootView: details)
-navigationController?.pushViewController(host, animated: true)</code></pre>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/278/" target="_blank" rel="noopener">Modernize UIKit</a><a href="https://developer.apple.com/videos/play/wwdc2026/289/" target="_blank" rel="noopener">Modernize AppKit</a><a href="https://developer.apple.com/videos/play/wwdc2026/272/" target="_blank" rel="noopener">SwiftUI with AppKit/UIKit</a></div>
         </article>
       </div>
@@ -561,10 +506,6 @@ navigationController?.pushViewController(host, animated: true)</code></pre>
             <li>Assets can appear in product page headers, search results, App Store features, custom product pages, product page optimization, and Apple Ads.</li>
             <li>Asset Library helps creative work move on its own timeline instead of being tied to every app binary release.</li>
           </ul>
-          <pre><code class="language-plaintext">Header image: product page excitement
-Search creative: relevant discovery moment
-Custom page: audience-specific screenshots
-Asset Library: pre-approved future use</code></pre>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/205/" target="_blank" rel="noopener">Enhance App Store presence</a><a href="https://developer.apple.com/wwdc26/guides/app-store/" target="_blank" rel="noopener">App Store guide</a></div>
         </article>
 
@@ -587,11 +528,6 @@ Asset Library: pre-approved future use</code></pre>
             <li>Custom product pages and product page optimization can work with the new creative assets.</li>
             <li>The enhanced submission experience groups In-App Purchases and related App Store items into a more centralized review flow.</li>
           </ul>
-          <pre><code class="language-plaintext">Segment: custom product page
-Metric: download-to-paid conversion
-Cohort: offer start date
-Filter: storefront + source type
-Compare: default page vs campaign page</code></pre>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/210/" target="_blank" rel="noopener">Apple In-App Purchase</a><a href="https://developer.apple.com/app-store-connect/analytics/" target="_blank" rel="noopener">App Store analytics</a><a href="https://developer.apple.com/app-store/custom-product-pages/" target="_blank" rel="noopener">Custom product pages</a></div>
         </article>
       </div>
@@ -623,9 +559,6 @@ Compare: default page vs campaign page</code></pre>
             <li>Safari 27 covers Grid Lanes, customizable select, the HTML model element, immersive website environments, Web Extensions, and MapKit JS updates.</li>
             <li>The HTML model element brings interactive 3D content to websites on iOS, iPadOS, macOS, and visionOS, with fallbacks and production asset guidance.</li>
           </ul>
-          <pre><code class="language-html">&lt;model src="/assets/device.usdz" alt="Product in 3D"&gt;
-  &lt;img src="/assets/device-preview.jpg" alt="Product preview"&gt;
-&lt;/model&gt;</code></pre>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/204/" target="_blank" rel="noopener">WebKit for Safari 27</a><a href="https://developer.apple.com/videos/play/wwdc2026/215/" target="_blank" rel="noopener">HTML model element</a><a href="https://developer.apple.com/videos/play/wwdc2026/314/" target="_blank" rel="noopener">CSS Grid Lanes</a><a href="https://developer.apple.com/videos/play/wwdc2026/216/" target="_blank" rel="noopener">Web extensions</a></div>
         </article>
 
@@ -668,15 +601,6 @@ Compare: default page vs campaign page</code></pre>
             <li>Apple documents Significant Update Action for significant app update acknowledgments.</li>
             <li>Apple’s age assurance Q&A directs technical implementation questions to Declared Age Range and PermissionKit resources.</li>
           </ul>
-          <pre><code class="language-swift">// Conceptual access check; see Declared Age Range docs for exact APIs.
-let ageRange = try await AgeRangeProvider.currentRange()
-
-guard ageRange.allowsSocialFeatures else {
-    showRestrictedExperience()
-    return
-}
-
-showCommunityFeatures()</code></pre>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/news/" target="_blank" rel="noopener">Apple Developer News</a><a href="https://developer.apple.com/support/age-assurance" target="_blank" rel="noopener">Age assurance Q&A</a><a href="https://developer.apple.com/documentation/declaredagerange/" target="_blank" rel="noopener">Declared Age Range</a></div>
         </article>
 
@@ -688,13 +612,6 @@ showCommunityFeatures()</code></pre>
             <li>Apple highlights threat modeling, secure prompt design, authentication, and user confirmations as mitigation themes.</li>
             <li>The guidance specifically connects these risks to App Intents and the Foundation Models framework.</li>
           </ul>
-          <pre><code class="language-swift">// Conceptual guardrail around an agent-proposed action.
-let proposal = try await assistant.proposeRefund(order)
-
-guard proposal.requiresUserConfirmation else { return }
-guard try await server.authorize(proposal) else { return }
-
-showConfirmationSheet(for: proposal)</code></pre>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/347/" target="_blank" rel="noopener">Secure agentic features</a><a href="https://developer.apple.com/videos/play/wwdc2026/201/" target="_blank" rel="noopener">App Attest</a><a href="https://developer.apple.com/videos/play/wwdc2026/379/" target="_blank" rel="noopener">Trust Insights</a></div>
         </article>
       </div>
