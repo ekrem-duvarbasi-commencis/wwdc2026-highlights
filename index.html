@@ -366,9 +366,9 @@
       <a href="#siri">Siri</a>
       <a href="#ai">AI Frameworks</a>
       <a href="#xcode">Xcode</a>
+      <a href="#swiftui">SwiftUI</a>
       <a href="#swift">Swift 6.4</a>
       <a href="#uikit">UIKit</a>
-      <a href="#swiftui">SwiftUI</a>
       <a href="#appstore">App Store</a>
       <a href="#spatial">Spatial & Web</a>
       <a href="#safety">Safety</a>
@@ -1039,211 +1039,6 @@ for try await sample in seedDataset.makeSamples(
       </div>
     </section>
 
-    <section class="section" id="swift">
-      <div class="section-header">
-        <div class="label">Swift 6.4</div>
-        <h2>Swift 6.4 brings ergonomics improvements, new library types, and better testing.</h2>
-        <p>Swift 6.4 brings language ergonomics improvements, improved C and Java interoperability, WebAssembly support, ownership-safe standard library types, and Swift Testing / XCTest interop. UIKit and AppKit also get practical modernization paths with Xcode agent help.</p>
-      </div>
-
-      <div class="card-grid">
-
-        <article class="card">
-          <h3>Everyday language improvements</h3>
-          <p>Swift 6.4 trims common boilerplate and gives you better tools for managing API evolution.</p>
-          <ul class="details-list">
-            <li><strong><code>anyAppleOS</code> availability:</strong> write <code>#available(anyAppleOS 27, *)</code> instead of listing iOS, macOS, watchOS, and tvOS separately.</li>
-            <li><strong><code>@diagnose</code> attribute:</strong> attach a custom warning or error to any API — great for nudging teammates away from deprecated code without removing it yet.</li>
-            <li><strong>Module selectors (<code>::</code>):</strong> when two frameworks share a type name, write <code>Payments::Order</code> instead of the full module path. Less noise, same clarity.</li>
-          </ul>
-          <details style="margin-bottom:16px;">
-            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
-              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
-            </summary>
-            <div style="margin-top:10px;">
-              <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
-                <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">anyAppleOS · @diagnose · Module selectors</div>
-              </div>
-              <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// anyAppleOS — one guard instead of four
-if #available(anyAppleOS 27, *) {
-    enableNewFeature()
-}
-
-// @diagnose — warn teammates at the call site
-@diagnose("Use fetchUser(id:) instead", .warning)
-func getUser(_ id: Int) -> User { … }
-
-// Module selectors — no more long prefixes
-import Payments
-import Orders
-let order: Payments::Order = …  // unambiguous</code></pre>
-            </div>
-          </details>
-          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
-          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/262/" target="_blank" rel="noopener">What's new in Swift</a><a href="https://developer.apple.com/wwdc26/guides/swift/" target="_blank" rel="noopener">Swift guide</a></div>
-        </article>
-
-        <article class="card">
-          <h3>Better interoperability and a faster Foundation</h3>
-          <p>Swift 6.4 makes it easier to call Swift from C, spawn child processes safely, and benefits from a much faster URL parsing implementation in Foundation.</p>
-          <ul class="details-list">
-            <li><strong>Swift-C interoperability (<code>@C</code>):</strong> mark a Swift function with <code>@C</code> and it's callable directly from C — no Objective-C bridging header needed. Useful for shared libraries and CLI tools.</li>
-            <li><strong>Subprocess 1.0:</strong> a new standard library for launching and managing child processes. Replaces ad-hoc <code>Process</code> usage with a clean async/await API that works the same on Apple platforms, Linux, and Windows.</li>
-            <li><strong>Foundation URL parsing:</strong> up to <strong>4× faster</strong> — no code changes needed, apps just get the speedup.</li>
-          </ul>
-          <details style="margin-bottom:16px;">
-            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
-              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
-            </summary>
-            <div style="margin-top:10px;">
-              <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
-                <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">@C attribute · Subprocess</div>
-              </div>
-              <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// @C — expose Swift directly to C callers
-@C public func computeChecksum(_ data: UnsafeBufferPointer<UInt8>) -> UInt32 { … }
-
-// Subprocess — run a shell command with async/await
-import Subprocess
-let result = try await Subprocess.run(
-    .named("ffmpeg"),
-    arguments: ["-i", inputPath, outputPath]
-)
-print(result.standardOutput)</code></pre>
-            </div>
-          </details>
-          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
-          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/262/" target="_blank" rel="noopener">What's new in Swift</a><a href="https://developer.apple.com/wwdc26/guides/swift/" target="_blank" rel="noopener">Swift guide</a></div>
-        </article>
-
-        <article class="card">
-          <h3>Swift ↔ Java interoperability is an open-source project under active development</h3>
-          <p>The <code>swift-java</code> package (pre-1.0, actively maintained) lets Swift code call Java libraries — and Java code call Swift libraries — without writing JNI glue by hand.</p>
-          <ul class="details-list">
-            <li><strong>Swift → Java (<code>SwiftJava</code>):</strong> macros wrap Java classes as native Swift types, so you can call any Java API from Swift code directly.</li>
-            <li><strong>Java → Swift (<code>jextract</code>):</strong> a source generator that reads your Swift package and outputs Java bindings. Uses the modern Java Foreign Function &amp; Memory API (JDK 22+) for the best performance, with a JNI fallback for broader compatibility.</li>
-            <li><strong>Not yet stable:</strong> the project is pre-1.0 with no API stability guarantees yet. Good for experimentation and early adoption — not yet production-ready for most teams.</li>
-          </ul>
-          <details style="margin-bottom:16px;">
-            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
-              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
-            </summary>
-            <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
-              <div>
-                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
-                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">Swift → Java: calling a Java library from Swift</div>
-                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Use <code>swift-java wrap-java</code> to generate Swift wrappers for a Java class, then call it naturally from Swift.</p>
-                </div>
-                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// Generated wrapper (via `swift-java wrap-java`)
-// Represents java.util.ArrayList as a Swift type
-let list = try JavaArrayList<JavaString>()
-try list.add("Hello from Swift")
-try list.add("called via swift-java")
-let size = try list.size()   // calls Java's ArrayList.size()
-print("Java list has \(size) items")</code></pre>
-              </div>
-              <div>
-                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
-                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">Java → Swift: calling a Swift library from Java</div>
-                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);"><code>swift-java jextract</code> reads your Swift package and generates Java bindings. The Java side then calls Swift as if it were a normal Java method.</p>
-                </div>
-                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// Swift library (Sources/MySwiftLib/Greeter.swift)
-public func greet(_ name: String) -> String {
-    "Hello, \(name), from Swift!"
-}</code></pre>
-                <pre style="margin:0;border-radius:var(--radius);margin-top:4px;"><code class="language-java">// Java caller — bindings generated by `swift-java jextract`
-import com.example.MySwiftLib;
-String msg = MySwiftLib.greet("Java");
-System.out.println(msg); // Hello, Java, from Swift!</code></pre>
-              </div>
-            </div>
-          </details>
-          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
-          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/262/" target="_blank" rel="noopener">What's new in Swift</a><a href="https://github.com/swiftlang/swift-java" target="_blank" rel="noopener">swift-java on GitHub</a></div>
-        </article>
-
-        <article class="card">
-          <h3>New ownership types and Swift Testing improvements</h3>
-          <p>New standard library types make it easier to write safe, high-performance code. Swift Testing now runs side-by-side with XCTest, so you can migrate tests gradually.</p>
-          <ul class="details-list">
-            <li><strong><code>UniqueBox</code>, <code>UniqueArray</code>, <code>Ref</code>:</strong> new types that work with Swift's ownership system. Think of them as safer alternatives to raw pointers when you need tight control over memory — without manual allocation.</li>
-            <li><strong>Swift Testing + XCTest interop:</strong> both test frameworks can now live in the same target. You can migrate one test file at a time instead of rewriting everything at once.</li>
-          </ul>
-          <details style="margin-bottom:16px;">
-            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
-              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
-            </summary>
-            <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
-              <div>
-                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
-                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">UniqueBox · UniqueArray · Ref</div>
-                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Ownership-safe types for working with heap-allocated values without raw pointers.</p>
-                </div>
-                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// UniqueBox — single, uniquely owned heap value
-var box = UniqueBox(42)
-box.value += 1          // mutate in place; no copy-on-write overhead
-let snapshot = box      // compile error if you try to share ownership
-
-// UniqueArray — a noncopyable, owned array
-var buffer = UniqueArray<Float>(repeating: 0, count: 1024)
-buffer[0] = 3.14        // direct, bounds-checked access
-
-// Ref — a non-owning reference into an owned buffer
-func process(_ ref: borrowing Ref<Float>) {
-    print(ref.pointee)  // read without transferring ownership
-}</code></pre>
-              </div>
-              <div>
-                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
-                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">Swift Testing alongside XCTest — same target</div>
-                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">New and old tests coexist in the same test target. Migrate one file at a time.</p>
-                </div>
-                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// Legacy test — stays as-is
-class LegacyLoginTests: XCTestCase {
-    func testLoginSuccess() { … }
-}
-
-// New test in the same target — no migration needed yet
-@Suite("Cart")
-struct CartTests {
-    @Test func addItem() {
-        var cart = Cart()
-        cart.add(Item(id: 1))
-        #expect(cart.count == 1)
-    }
-}</code></pre>
-              </div>
-            </div>
-          </details>
-          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
-          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/262/" target="_blank" rel="noopener">What's new in Swift</a><a href="https://developer.apple.com/videos/play/wwdc2026/267/" target="_blank" rel="noopener">Migrate to Swift Testing</a><a href="https://developer.apple.com/wwdc26/guides/swift/" target="_blank" rel="noopener">Swift guide</a></div>
-        </article>
-
-      </div>
-    </section>
-
-    <section class="section" id="uikit">
-      <div class="section-header">
-        <div class="label">UIKit &amp; AppKit</div>
-        <h2>UIKit and AppKit get clearer modernization paths — with Xcode agent help.</h2>
-        <p>WWDC26 brings practical guides for updating UIKit and AppKit apps, an Xcode 27 agent skill that can apply many fixes automatically, and clearer guidance on where SwiftUI bridging makes the most sense.</p>
-      </div>
-
-      <div class="card-grid">
-
-        <article class="card">
-          <h3>UIKit and AppKit modernization is clearer — with Xcode agent help</h3>
-          <p>WWDC26 includes practical modernization guides for both UIKit and AppKit, with an Xcode 27 agent skill that can apply many changes automatically.</p>
-          <ul class="details-list">
-            <li><strong>UIKit:</strong> four legacy API patterns break correctness in iPhone Mirroring and Stage Manager — app lifecycle (AppDelegate-only), <code>UIScreen.main</code>, user interface idiom checks, and interface orientation. New <code>UIView</code> body protocols also modernize motion and location update handling. An Xcode agent skill can help enumerate and fix these across your codebase.</li>
-            <li><strong>AppKit:</strong> macOS Golden Gate brings Liquid Glass to AppKit apps. A new <em>concentricity</em> model ensures nested corners share a consistent radius relationship. The session also covers gesture recognizers for input handling and graceful state restoration via improved <code>NSUserActivity</code> support.</li>
-            <li><strong>SwiftUI bridging (session 272):</strong> embed SwiftUI views in existing UIKit or AppKit hierarchies — most useful around navigation, state ownership, accessibility, document handling, and previewability, without a full rewrite.</li>
-          </ul>
-          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/278/" target="_blank" rel="noopener">Modernize UIKit</a><a href="https://developer.apple.com/videos/play/wwdc2026/289/" target="_blank" rel="noopener">Modernize AppKit</a><a href="https://developer.apple.com/videos/play/wwdc2026/272/" target="_blank" rel="noopener">SwiftUI with AppKit/UIKit</a></div>
-        </article>
-
-      </div>
-    </section>
-
     <section class="section" id="swiftui">
       <div class="section-header">
         <div class="label">Most Important</div>
@@ -1486,6 +1281,211 @@ AsyncImage(url: thumbnailURL)
             <li><strong>The key idea:</strong> chain small, focused modifiers instead of one large drawing block — easier to reuse, test, and swap out.</li>
           </ul>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/322/" target="_blank" rel="noopener">Compose advanced graphics effects</a><a href="https://developer.apple.com/documentation/SwiftUI/Shader" target="_blank" rel="noopener">Shader docs</a><a href="https://developer.apple.com/documentation/SwiftUI/Composing-advanced-graphics-effects-with-SwiftUI" target="_blank" rel="noopener">Sample code</a><a href="https://developer.apple.com/documentation/SwiftUI/Alignment" target="_blank" rel="noopener">Alignment docs</a></div>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="section" id="swift">
+      <div class="section-header">
+        <div class="label">Swift 6.4</div>
+        <h2>Swift 6.4 brings ergonomics improvements, new library types, and better testing.</h2>
+        <p>Swift 6.4 brings language ergonomics improvements, improved C and Java interoperability, WebAssembly support, ownership-safe standard library types, and Swift Testing / XCTest interop. UIKit and AppKit also get practical modernization paths with Xcode agent help.</p>
+      </div>
+
+      <div class="card-grid">
+
+        <article class="card">
+          <h3>Everyday language improvements</h3>
+          <p>Swift 6.4 trims common boilerplate and gives you better tools for managing API evolution.</p>
+          <ul class="details-list">
+            <li><strong><code>anyAppleOS</code> availability:</strong> write <code>#available(anyAppleOS 27, *)</code> instead of listing iOS, macOS, watchOS, and tvOS separately.</li>
+            <li><strong><code>@diagnose</code> attribute:</strong> attach a custom warning or error to any API — great for nudging teammates away from deprecated code without removing it yet.</li>
+            <li><strong>Module selectors (<code>::</code>):</strong> when two frameworks share a type name, write <code>Payments::Order</code> instead of the full module path. Less noise, same clarity.</li>
+          </ul>
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
+            </summary>
+            <div style="margin-top:10px;">
+              <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">anyAppleOS · @diagnose · Module selectors</div>
+              </div>
+              <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// anyAppleOS — one guard instead of four
+if #available(anyAppleOS 27, *) {
+    enableNewFeature()
+}
+
+// @diagnose — warn teammates at the call site
+@diagnose("Use fetchUser(id:) instead", .warning)
+func getUser(_ id: Int) -> User { … }
+
+// Module selectors — no more long prefixes
+import Payments
+import Orders
+let order: Payments::Order = …  // unambiguous</code></pre>
+            </div>
+          </details>
+          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/262/" target="_blank" rel="noopener">What's new in Swift</a><a href="https://developer.apple.com/wwdc26/guides/swift/" target="_blank" rel="noopener">Swift guide</a></div>
+        </article>
+
+        <article class="card">
+          <h3>Better interoperability and a faster Foundation</h3>
+          <p>Swift 6.4 makes it easier to call Swift from C, spawn child processes safely, and benefits from a much faster URL parsing implementation in Foundation.</p>
+          <ul class="details-list">
+            <li><strong>Swift-C interoperability (<code>@C</code>):</strong> mark a Swift function with <code>@C</code> and it's callable directly from C — no Objective-C bridging header needed. Useful for shared libraries and CLI tools.</li>
+            <li><strong>Subprocess 1.0:</strong> a new standard library for launching and managing child processes. Replaces ad-hoc <code>Process</code> usage with a clean async/await API that works the same on Apple platforms, Linux, and Windows.</li>
+            <li><strong>Foundation URL parsing:</strong> up to <strong>4× faster</strong> — no code changes needed, apps just get the speedup.</li>
+          </ul>
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
+            </summary>
+            <div style="margin-top:10px;">
+              <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">@C attribute · Subprocess</div>
+              </div>
+              <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// @C — expose Swift directly to C callers
+@C public func computeChecksum(_ data: UnsafeBufferPointer<UInt8>) -> UInt32 { … }
+
+// Subprocess — run a shell command with async/await
+import Subprocess
+let result = try await Subprocess.run(
+    .named("ffmpeg"),
+    arguments: ["-i", inputPath, outputPath]
+)
+print(result.standardOutput)</code></pre>
+            </div>
+          </details>
+          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/262/" target="_blank" rel="noopener">What's new in Swift</a><a href="https://developer.apple.com/wwdc26/guides/swift/" target="_blank" rel="noopener">Swift guide</a></div>
+        </article>
+
+        <article class="card">
+          <h3>Swift ↔ Java interoperability is an open-source project under active development</h3>
+          <p>The <code>swift-java</code> package (pre-1.0, actively maintained) lets Swift code call Java libraries — and Java code call Swift libraries — without writing JNI glue by hand.</p>
+          <ul class="details-list">
+            <li><strong>Swift → Java (<code>SwiftJava</code>):</strong> macros wrap Java classes as native Swift types, so you can call any Java API from Swift code directly.</li>
+            <li><strong>Java → Swift (<code>jextract</code>):</strong> a source generator that reads your Swift package and outputs Java bindings. Uses the modern Java Foreign Function &amp; Memory API (JDK 22+) for the best performance, with a JNI fallback for broader compatibility.</li>
+            <li><strong>Not yet stable:</strong> the project is pre-1.0 with no API stability guarantees yet. Good for experimentation and early adoption — not yet production-ready for most teams.</li>
+          </ul>
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
+            </summary>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">Swift → Java: calling a Java library from Swift</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Use <code>swift-java wrap-java</code> to generate Swift wrappers for a Java class, then call it naturally from Swift.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// Generated wrapper (via `swift-java wrap-java`)
+// Represents java.util.ArrayList as a Swift type
+let list = try JavaArrayList<JavaString>()
+try list.add("Hello from Swift")
+try list.add("called via swift-java")
+let size = try list.size()   // calls Java's ArrayList.size()
+print("Java list has \(size) items")</code></pre>
+              </div>
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">Java → Swift: calling a Swift library from Java</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);"><code>swift-java jextract</code> reads your Swift package and generates Java bindings. The Java side then calls Swift as if it were a normal Java method.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// Swift library (Sources/MySwiftLib/Greeter.swift)
+public func greet(_ name: String) -> String {
+    "Hello, \(name), from Swift!"
+}</code></pre>
+                <pre style="margin:0;border-radius:var(--radius);margin-top:4px;"><code class="language-java">// Java caller — bindings generated by `swift-java jextract`
+import com.example.MySwiftLib;
+String msg = MySwiftLib.greet("Java");
+System.out.println(msg); // Hello, Java, from Swift!</code></pre>
+              </div>
+            </div>
+          </details>
+          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/262/" target="_blank" rel="noopener">What's new in Swift</a><a href="https://github.com/swiftlang/swift-java" target="_blank" rel="noopener">swift-java on GitHub</a></div>
+        </article>
+
+        <article class="card">
+          <h3>New ownership types and Swift Testing improvements</h3>
+          <p>New standard library types make it easier to write safe, high-performance code. Swift Testing now runs side-by-side with XCTest, so you can migrate tests gradually.</p>
+          <ul class="details-list">
+            <li><strong><code>UniqueBox</code>, <code>UniqueArray</code>, <code>Ref</code>:</strong> new types that work with Swift's ownership system. Think of them as safer alternatives to raw pointers when you need tight control over memory — without manual allocation.</li>
+            <li><strong>Swift Testing + XCTest interop:</strong> both test frameworks can now live in the same target. You can migrate one test file at a time instead of rewriting everything at once.</li>
+          </ul>
+          <details style="margin-bottom:16px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;">
+              <span class="summary-arrow" style="display:inline-block;transition:transform 0.2s;">▶</span> Show code example
+            </summary>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">UniqueBox · UniqueArray · Ref</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">Ownership-safe types for working with heap-allocated values without raw pointers.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// UniqueBox — single, uniquely owned heap value
+var box = UniqueBox(42)
+box.value += 1          // mutate in place; no copy-on-write overhead
+let snapshot = box      // compile error if you try to share ownership
+
+// UniqueArray — a noncopyable, owned array
+var buffer = UniqueArray<Float>(repeating: 0, count: 1024)
+buffer[0] = 3.14        // direct, bounds-checked access
+
+// Ref — a non-owning reference into an owned buffer
+func process(_ ref: borrowing Ref<Float>) {
+    print(ref.pointee)  // read without transferring ownership
+}</code></pre>
+              </div>
+              <div>
+                <div style="background:var(--bg);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;padding:8px 10px;">
+                  <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);">Swift Testing alongside XCTest — same target</div>
+                  <p style="margin:4px 0 0;font-size:12px;color:var(--muted);">New and old tests coexist in the same test target. Migrate one file at a time.</p>
+                </div>
+                <pre style="margin:0;border-radius:0 0 var(--radius) var(--radius);"><code class="language-swift">// Legacy test — stays as-is
+class LegacyLoginTests: XCTestCase {
+    func testLoginSuccess() { … }
+}
+
+// New test in the same target — no migration needed yet
+@Suite("Cart")
+struct CartTests {
+    @Test func addItem() {
+        var cart = Cart()
+        cart.add(Item(id: 1))
+        #expect(cart.count == 1)
+    }
+}</code></pre>
+              </div>
+            </div>
+          </details>
+          <script>document.currentScript.previousElementSibling.addEventListener('toggle',function(){this.querySelector('.summary-arrow').style.transform=this.open?'rotate(90deg)':''});</script>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/262/" target="_blank" rel="noopener">What's new in Swift</a><a href="https://developer.apple.com/videos/play/wwdc2026/267/" target="_blank" rel="noopener">Migrate to Swift Testing</a><a href="https://developer.apple.com/wwdc26/guides/swift/" target="_blank" rel="noopener">Swift guide</a></div>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="section" id="uikit">
+      <div class="section-header">
+        <div class="label">UIKit &amp; AppKit</div>
+        <h2>UIKit and AppKit get clearer modernization paths — with Xcode agent help.</h2>
+        <p>WWDC26 brings practical guides for updating UIKit and AppKit apps, an Xcode 27 agent skill that can apply many fixes automatically, and clearer guidance on where SwiftUI bridging makes the most sense.</p>
+      </div>
+
+      <div class="card-grid">
+
+        <article class="card">
+          <h3>UIKit and AppKit modernization is clearer — with Xcode agent help</h3>
+          <p>WWDC26 includes practical modernization guides for both UIKit and AppKit, with an Xcode 27 agent skill that can apply many changes automatically.</p>
+          <ul class="details-list">
+            <li><strong>UIKit:</strong> four legacy API patterns break correctness in iPhone Mirroring and Stage Manager — app lifecycle (AppDelegate-only), <code>UIScreen.main</code>, user interface idiom checks, and interface orientation. New <code>UIView</code> body protocols also modernize motion and location update handling. An Xcode agent skill can help enumerate and fix these across your codebase.</li>
+            <li><strong>AppKit:</strong> macOS Golden Gate brings Liquid Glass to AppKit apps. A new <em>concentricity</em> model ensures nested corners share a consistent radius relationship. The session also covers gesture recognizers for input handling and graceful state restoration via improved <code>NSUserActivity</code> support.</li>
+            <li><strong>SwiftUI bridging (session 272):</strong> embed SwiftUI views in existing UIKit or AppKit hierarchies — most useful around navigation, state ownership, accessibility, document handling, and previewability, without a full rewrite.</li>
+          </ul>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/278/" target="_blank" rel="noopener">Modernize UIKit</a><a href="https://developer.apple.com/videos/play/wwdc2026/289/" target="_blank" rel="noopener">Modernize AppKit</a><a href="https://developer.apple.com/videos/play/wwdc2026/272/" target="_blank" rel="noopener">SwiftUI with AppKit/UIKit</a></div>
         </article>
 
       </div>
