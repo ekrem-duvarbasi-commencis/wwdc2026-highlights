@@ -1590,25 +1590,27 @@ case .userCancelled:
     <section class="section" id="spatial">
       <div class="section-header">
         <div class="label">Other WWDC26 Topics</div>
-        <h2>Spatial computing, design, and web platform work continue to expand.</h2>
+        <h2>Spatial, Web & Design Updates</h2>
         <p>Beyond the headline AI and Xcode news, WWDC26 adds important updates for visionOS, RealityKit, OpenUSD, Safari 27, HTML, CSS, and design systems.</p>
       </div>
 
       <div class="card-grid">
         <article class="card">
+          <img class="card-image" src="images/reality-kit.png" alt="RealityKit and visionOS 27 spatial computing features" loading="lazy" decoding="async" />
           <h3>visionOS 27 deepens spatial workflows</h3>
           <p>visionOS 27 adds RealityKit enhancements, Spatial Preview from Mac to Apple Vision Pro, improved object tracking, foveated streaming, and Reality Composer Pro 3 updates.</p>
           <ul class="details-list">
             <li>RealityKit gains features for physical-space lighting, projective textures, cloth simulation, Reverb Mesh, and Gaussian Splats.</li>
             <li>Spatial Preview lets Mac apps connect to Quick Look on visionOS for live preview and updates of spatial content.</li>
             <li>Object tracking gets high-frame-rate tracking and accuracy improvements for objects people hold and move.</li>
+            <li>USDKit introduces Swift APIs to read, traverse, and process USD assets natively — enabling pipeline tools and USD-aware features without shell tools.</li>
           </ul>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/287/" target="_blank" rel="noopener">visionOS 27</a><a href="https://developer.apple.com/videos/play/wwdc2026/279/" target="_blank" rel="noopener">RealityKit</a><a href="https://developer.apple.com/videos/play/wwdc2026/282/" target="_blank" rel="noopener">Spatial Preview</a><a href="https://developer.apple.com/videos/play/wwdc2026/285/" target="_blank" rel="noopener">USDKit</a></div>
         </article>
 
         <article class="card">
           <h3>Safari 27 and richer web UI</h3>
-          <p>Safari and WebKit sessions highlight Safari 27, web extensions, the HTML model element, CSS Grid Lanes, and more polished native web controls.</p>
+          <p>Safari 27 and WebKit gain CSS Grid Lanes, the HTML model element, a customisable select, immersive website environments, updated Web Extensions, and MapKit JS improvements.</p>
           <ul class="details-list">
             <li>Safari 27 covers Grid Lanes, customizable select, the HTML model element, immersive website environments, Web Extensions, and MapKit JS updates.</li>
             <li>The HTML model element brings interactive 3D content to websites on iOS, iPadOS, macOS, and visionOS, with fallbacks and production asset guidance.</li>
@@ -1621,8 +1623,7 @@ case .userCancelled:
           <p>Apple highlights principles, naming, search, brand identity, accessibility, and custom controls so apps feel clearer and more consistent across platforms.</p>
           <ul class="details-list">
             <li>Apple’s design guide frames the platform refinements around consistency, readability, accessibility, and adapting across devices and screen sizes.</li>
-            <li>The related sessions focus on design principles, clear names and labels, intuitive search, and accessible custom controls.</li>
-            <li>Design resources also expand around Icon Composer, SF Symbols 8, Pass Designer, and Reality Composer Pro 3.</li>
+            <li>New guidance covers clear naming, intuitive search, and accessible custom controls across all Apple platforms.</li>
           </ul>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/250/" target="_blank" rel="noopener">Design principles</a><a href="https://developer.apple.com/videos/play/wwdc2026/290/" target="_blank" rel="noopener">Feature names and labels</a><a href="https://developer.apple.com/videos/play/wwdc2026/292/" target="_blank" rel="noopener">Search experiences</a><a href="https://developer.apple.com/videos/play/wwdc2026/220/" target="_blank" rel="noopener">Accessible custom controls</a></div>
         </article>
@@ -1642,7 +1643,7 @@ case .userCancelled:
           <p>iOS 27, iPadOS 27, and macOS 27 add Time Allowances so parents can manage time by categories like Entertainment, Games, and Social Media.</p>
           <ul class="details-list">
             <li>App Store categories and age-rating answers become more visible when parents manage time by app category.</li>
-            <li>Feeds, profiles, reposting, comments, and messaging can affect whether an app is treated as having social media capabilities.</li>
+            <li>Feeds, profiles, reposting, comments, and messaging can affect whether an app is treated as having social media capabilities — the <a href="#dates">September 2026 declaration deadline</a> makes this categorisation time-sensitive.</li>
           </ul>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/news/" target="_blank" rel="noopener">Apple Developer News</a><a href="https://developer.apple.com/wwdc26/guides/app-store/" target="_blank" rel="noopener">App Store guide</a></div>
         </article>
@@ -1653,18 +1654,19 @@ case .userCancelled:
           <ul class="details-list">
             <li>The Declared Age Range API requests an age range while preserving privacy and requires the declared-age-range entitlement.</li>
             <li>Apple documents Significant Update Action for significant app update acknowledgments.</li>
-            <li>Apple’s age assurance Q&A directs technical implementation questions to Declared Age Range and PermissionKit resources.</li>
+            <li>PermissionKit provides reusable permission-request UI that works across Apple platforms, reducing friction for age-gated features.</li>
           </ul>
-          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/news/" target="_blank" rel="noopener">Apple Developer News</a><a href="https://developer.apple.com/support/age-assurance" target="_blank" rel="noopener">Age assurance Q&A</a><a href="https://developer.apple.com/documentation/declaredagerange/" target="_blank" rel="noopener">Declared Age Range</a></div>
+          <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/news/" target="_blank" rel="noopener">Apple Developer News</a><a href="https://developer.apple.com/support/age-assurance" target="_blank" rel="noopener">Age assurance Q&A</a><a href="https://developer.apple.com/documentation/declaredagerange/" target="_blank" rel="noopener">Declared Age Range</a><a href="https://developer.apple.com/documentation/permissionkit/" target="_blank" rel="noopener">PermissionKit</a></div>
         </article>
 
         <article class="card">
           <h3>Agentic features need security review</h3>
           <p>Apple includes guidance for securing agentic features, using App Attest, and understanding trust signals when apps rely on AI-driven actions.</p>
           <ul class="details-list">
-            <li>The session focuses on indirect prompt injection risks such as data exfiltration and unintended actions.</li>
+            <li>Indirect prompt injection — where malicious content in data causes the model to take unintended actions like exfiltrating data — is the primary threat to address.</li>
             <li>Apple highlights threat modeling, secure prompt design, authentication, and user confirmations as mitigation themes.</li>
-            <li>The guidance specifically connects these risks to App Intents and the Foundation Models framework.</li>
+            <li>These risks apply directly to apps built on App Intents and the Foundation Models framework.</li>
+            <li>Trust Insights helps apps determine whether a request originates from a human, an automated process, or an on-device agent — a key signal for deciding when to require explicit user confirmation.</li>
           </ul>
           <div class="sources"><span>Sources:</span><a href="https://developer.apple.com/videos/play/wwdc2026/347/" target="_blank" rel="noopener">Secure agentic features</a><a href="https://developer.apple.com/videos/play/wwdc2026/201/" target="_blank" rel="noopener">App Attest</a><a href="https://developer.apple.com/videos/play/wwdc2026/379/" target="_blank" rel="noopener">Trust Insights</a></div>
         </article>
